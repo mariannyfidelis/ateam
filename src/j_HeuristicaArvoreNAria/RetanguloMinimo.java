@@ -1,7 +1,9 @@
 package j_HeuristicaArvoreNAria;
 
+import java.io.Serializable;
 
-public class RetanguloMinimo {
+
+public class RetanguloMinimo implements Serializable{
 
 	private float w_p;
 	private float h_p;

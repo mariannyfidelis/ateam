@@ -4,8 +4,8 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import Util.Funcoes;
-import Util.Pedidos;
+import Utilidades.Funcoes;
+import j_HeuristicaArvoreNAria.Pedidos;
 
 public class Util {
 

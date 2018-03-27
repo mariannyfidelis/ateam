@@ -1,36 +1,35 @@
 package Heuristicas;
 
-import AgCombinacao.ETiposServicosAgentes;
-import ComunicaoConcorrenteParalela.ETiposServicosServidor;
-import ComunicaoConcorrenteParalela.ObjetoComunicacao;
-import ComunicaoConcorrenteParalela.SimulaServidor;
-import ComunicaoConcorrenteParalela.TipoMemoria;
-import java.util.LinkedList;
-import algoritmosAgCombinacao.OperacoesSolucoes_Individuos;
+import java.util.Set;
+import java.util.Iterator;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.LinkedList;
+import SimulaGenetico.Agentes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.nio.channels.Selector;
+import HHDInternal.SolucaoHeuristica;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.ServerSocketChannel;
+import ComunicaoConcorrenteParalela.TipoMemoria;
+import ComunicaoConcorrenteParalela.SimulaServidor;
+import ComunicaoConcorrenteParalela.ETiposServicosServidor;
+import ComunicaoConcorrenteParalela.ObjetoComunicacaoMelhorado;
 
 public class Memoria extends SimulaServidor implements Runnable{
 
     private int tamanho_memoria;
     private int num_solucoes;
-    private LinkedList<Solucao> lista_solucoes;
+    private LinkedList<SolucaoHeuristica> lista_solucoes;       
 
-    
     public Memoria(int tamanho_memoria){
 
         System.out.println("Inicializei uma Memória de tamanho "+ tamanho_memoria);
         num_solucoes = 0;
         this.tamanho_memoria = tamanho_memoria;
-        lista_solucoes = new LinkedList<Solucao>();
+        lista_solucoes = new LinkedList<SolucaoHeuristica>();
     }
 
     public Memoria(int porta, String host, String name,int tamanho_memoria, TipoMemoria tipoMemoria/*POLÍTICA DESTRUIÇÃO*/) throws IOException{
@@ -38,10 +37,9 @@ public class Memoria extends SimulaServidor implements Runnable{
         System.out.println("Inicializei a Memória "+ name+" de tamanho "+ tamanho_memoria);
         num_solucoes = 0;
         this.tamanho_memoria = tamanho_memoria;
-        lista_solucoes = new LinkedList<Solucao>();
+        lista_solucoes = new LinkedList<SolucaoHeuristica>();
         
         this.simulaServidor(porta, host, name, tipoMemoria);
-       
         //super.SimulaServidor(porta, host, name, tipoMemoria);
     }
 
@@ -65,22 +63,22 @@ public class Memoria extends SimulaServidor implements Runnable{
         this.num_solucoes = num_solucoes;
     }
 
-    public LinkedList<Solucao> getLista_solucoes(){
+    public LinkedList<SolucaoHeuristica> getLista_solucoes(){
 
         return lista_solucoes;
     }
 
-    public void setLista_solucoes(LinkedList<Solucao> lista_solucoes) {
+    public void setLista_solucoes(LinkedList<SolucaoHeuristica> lista_solucoes) {
 
         this.lista_solucoes = lista_solucoes; //Talvez this.lista_solucoes.addAll(lista_solucoes)
     }
 
-    public Solucao getSolucaoMemoria(int indice){
+    public SolucaoHeuristica getSolucaoMemoria(int indice){
 
         return lista_solucoes.get(indice);
     }
 
-    public void adiciona_solucao(Solucao solucao){
+    public void adiciona_solucao(SolucaoHeuristica solucao){
 
         if(getNum_solucoes() + 1 <= getTamanho_memoria()){
 
@@ -91,14 +89,14 @@ public class Memoria extends SimulaServidor implements Runnable{
         }
     }
 
-    public void remove_solucao(Solucao solucao){
+    public void remove_solucao(SolucaoHeuristica solucao){
 
         getLista_solucoes().remove(solucao);
         setNum_solucoes(getNum_solucoes() - 1);
         //setTamanho_memoria(getTamanho_memoria() + 1);
     }
 
-    public void adiciona_conjuntoSolucoes(LinkedList<Solucao> list_solucoes){
+    public void adiciona_conjuntoSolucoes(LinkedList<SolucaoHeuristica> list_solucoes){
 
         if(getNum_solucoes() + list_solucoes.size() <= getTamanho_memoria()){
 
@@ -110,14 +108,14 @@ public class Memoria extends SimulaServidor implements Runnable{
 
     public void imprimeSolucoes(){
 
-        Iterator<Solucao> it_sol = getLista_solucoes().iterator();
-        Solucao solucao_;
+        Iterator<SolucaoHeuristica> it_sol = getLista_solucoes().iterator();
+        SolucaoHeuristica solucao_;
         int cont = 1;
         while(it_sol.hasNext()){
 
             solucao_ = it_sol.next();
-            Solucao.imprimeSolucao(solucao_, cont);
-
+            //SolucaoHeuristica.imprimeSolucao(solucao_, cont);
+            solucao_.imprimeSolucao(solucao_, cont);
             cont++;
         }            
     }
@@ -137,8 +135,9 @@ public class Memoria extends SimulaServidor implements Runnable{
             try{
                 Selector selector = Selector.open();
                 
-                ByteBuffer buffer = null;
-
+                ByteBuffer buffer = ByteBuffer.allocate(5000);
+                ByteBuffer[] vetor_Byte_Buffer = new ByteBuffer[tamanho_memoria]; //Um vetor de ByteBuffer que recebe no máximo tamanho da memória !
+                
                 //Registra canal no selector
                 SelectionKey key = server.register(selector, SelectionKey.OP_ACCEPT);
                 
@@ -186,8 +185,12 @@ public class Memoria extends SimulaServidor implements Runnable{
 
                                     buffer.flip();
 
-                                    servChannel.write(serializaMensagem(new ObjetoComunicacao(null, "Tenho fé em DEUS !", 
-                                                                        ETiposServicosAgentes.agente_inicializacao,ETiposServicosServidor.AtualizaSolucao)));//, servChannel);
+                                    //servChannel.write(serializaMensagem(new ObjetoComunicacao(null, "Pronto para receber dados!", 
+                                      //                                  ETiposServicosAgentes.agente_inicializacao,ETiposServicosServidor.AtualizaSolucao)));//, servChannel);
+                                    
+                                    //Aqui será realizado um teste com Objeto Comunicação Melhorado
+                                    servChannel.write(serializaMensagem(new ObjetoComunicacaoMelhorado(null, "Pronto para receber dados!", 
+                                                        null,null)));
                                     
                                     System.out.println("\nEnviado comunicação ...");
 
@@ -198,24 +201,57 @@ public class Memoria extends SimulaServidor implements Runnable{
                                     //Limpar o buffer
                                     buffer.clear();
 
-                                    int numBytesRead, cont = 0;
-                                    ObjetoComunicacao obcom = new ObjetoComunicacao();
+                                    int numBytesRead = 0, cont = 0;
+                                    //ObjetoComunicacao obcom = new ObjetoComunicacao();
+                                    ObjetoComunicacaoMelhorado obcom = new ObjetoComunicacaoMelhorado();
                                    
+                                    boolean testes_b = true;
                                     do{
                                         //Prepara o buffer para leitura
                                         buffer.clear();
-                                        numBytesRead = servChannel.read(buffer);
+                                        
+                                        //Aqui o Servidor tenta ler um ByteBuffer
+                                        try{
+                                            System.out.println("Entre no teste");
+                                            //numBytesRead = servChannel.read(buffer);
+                                            do{ 
+                                                numBytesRead = (int) servChannel.read(buffer);
+                                            }while(numBytesRead > 0);
+                                            ObjetoComunicacaoMelhorado obj = Agentes.deserializaMensagemMelhorado(buffer);//deserializaMensagemObM(buffer);
 
+                                                System.out.println("\n\nTestando o Objeto Comunicação Melhorado !!!");
+                                                System.out.println("Servico Agente --> "+obj.getMSGServicoAgente());
+                                                System.out.println("Tipo Serviço Agente --> "+obj.getTipoServicoAgente());
+                                                System.out.println("Tipo Serviço Servidor --> "+obj.getTipoServicoServidor());
+                                                System.out.println("FAV --> "+obj.getSolucao().getFAV());
+                                                System.out.println("FAV2 --> "+obj.getSolucao().getFAV2());
+
+                                                Iterator<Individuo> ind = obj.getSolucao().getLinkedListIndividuos().iterator();
+
+                                                while(ind.hasNext()){
+
+                                                    System.out.println("\nLista Intens --> "+ ind.next().getListaItens());
+                                                }
+                                        }
+                                        catch(Exception e){
+                                        
+                                            System.out.println("Lançando uma exceção !!!");
+                                                
+                                        
+                                             
+                                        }
+                                        
                                         System.out.println("Num -> "+cont++);
 
-                                        obcom = deserializaMensagem(buffer);
+                                        //obcom = deserializaMensagemObM(buffer);
 
-                                        System.out.println(""+obcom.getServicoAgente());
-                                        System.out.println(""+obcom.getTipoServicoAgente2().toString());
-                                        System.out.println(""+obcom.getTipoServicoServidor().toString());
+                                        
+                                        //System.out.println(""+obcom.getMSGServicoAgente());
+                                       // System.out.println(""+obcom.getTipoServicoAgente2().toString());
+                                        //System.out.println(""+obcom.getTipoServicoServidor().toString());
 
                                         //Por enquanto só imprima
-                                        Solucao.imprimeSolucao(obcom.getSolucao(),cont);
+                                        //HeuristicaConstrutivaInicial.Solucao.imprimeSolucao(obcom.getSolucao(),cont);
                                         
                                         if(numBytesRead == -1){
                                              //servChannel.close();
@@ -223,7 +259,7 @@ public class Memoria extends SimulaServidor implements Runnable{
                                             buffer.flip();
                                         }
 
-                                    }while(!obcom.getServicoAgente().equalsIgnoreCase("Fim"));//{
+                                    }while(testes_b != false);//{
                                 
                                     /*if(buffer != null){
 
@@ -249,7 +285,8 @@ public class Memoria extends SimulaServidor implements Runnable{
     //Método que chamará a execução do servidor
     public void execute(){
       
-        ObjetoComunicacao objeto;
+        //ObjetoComunicacao objeto;
+        ObjetoComunicacaoMelhorado objeto;
           //Pega os dados do InputStream do Socket      
           //Processa informação do socket de entrada e processa informação
           objeto = processaInformacao(super.lerSocketChannel(super.getSocket(), null));
@@ -264,11 +301,13 @@ public class Memoria extends SimulaServidor implements Runnable{
              //write.close();
     }
   
-    public ObjetoComunicacao processaInformacao(ByteBuffer byteBuffer) throws IllegalArgumentException{
+    public ObjetoComunicacaoMelhorado processaInformacao(ByteBuffer byteBuffer) throws IllegalArgumentException{
 
-      Solucao solucao = new Solucao();
-      ObjetoComunicacao objeto = new ObjetoComunicacao();
-      objeto = deserializaMensagem(byteBuffer);
+      SolucaoHeuristica solucao = new SolucaoHeuristica();
+      //ObjetoComunicacao objeto = new ObjetoComunicacao();
+      ObjetoComunicacaoMelhorado objeto = new ObjetoComunicacaoMelhorado();
+      
+      objeto = deserializaMensagemObM(byteBuffer);
       
       //Aqui o tipo de Serviço de Servidor indica qual o serviço que agente deseja !!!
       if(objeto.getTipoServicoServidor().equals(ETiposServicosServidor.MelhorSolucao)){
@@ -283,7 +322,7 @@ public class Memoria extends SimulaServidor implements Runnable{
           objeto.setSolucao(solucao);
       }
       //Se for agente de Serviço C
-      else if(objeto.getTipoServicoServidor().equals(ETiposServicosServidor.Sol_Aleatorio)){
+      else if(objeto.getTipoServicoServidor().equals(ETiposServicosServidor.Solucao_Aleatoria)){
          //Vou retornar uma solucao aleatória
          solucao = retorna_aleatoria_Solucao(getLista_solucoes());   //Passar memória adequada !!!
          objeto.setSolucao(solucao);
@@ -299,28 +338,27 @@ public class Memoria extends SimulaServidor implements Runnable{
                 MÉTODOS QUE MANIPULAM E RETORNAM SOLUÇÕES ADEQUADAS
     ########################################################################################*/
     
-    Solucao solucao = new Solucao();
-    OperacoesSolucoes_Individuos operacoesSolucoes = new OperacoesSolucoes_Individuos();
+    SolucaoHeuristica solucao = new SolucaoHeuristica();
+    SimulaGenetico.OperacoesSolucoes_Individuos operacoesSolucoes = new SimulaGenetico.OperacoesSolucoes_Individuos();
     
-    public Solucao retorna_melhor_Solucao(LinkedList<Solucao> list_solucao) {
+    public SolucaoHeuristica retorna_melhor_Solucao(LinkedList<SolucaoHeuristica> list_solucao) {
     
         solucao.setSolucao(operacoesSolucoes.retornaMelhorSolucao(getLista_solucoes()));
         return solucao;
     }
     
-    public Solucao retorna_pior_Solucao(LinkedList<Solucao> list_solucao) {
+    public SolucaoHeuristica retorna_pior_Solucao(LinkedList<SolucaoHeuristica> list_solucao) {
     
         solucao = operacoesSolucoes.retornaPiorSolucao(getLista_solucoes());
         
         return solucao;
     }
 
-    public Solucao retorna_aleatoria_Solucao(LinkedList<Solucao> list_solucao) {
+    public SolucaoHeuristica retorna_aleatoria_Solucao(LinkedList<SolucaoHeuristica> list_solucao) {
     
         solucao = operacoesSolucoes.retornaSolucaoAleatoria(getLista_solucoes());
         return solucao;
     }
-
     
     //Método run simula Thread !!!!    
     @Override
@@ -331,6 +369,5 @@ public class Memoria extends SimulaServidor implements Runnable{
             Logger.getLogger(Memoria.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+     
 }

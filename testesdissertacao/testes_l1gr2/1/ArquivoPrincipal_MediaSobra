@@ -1,0 +1,8 @@
+reset
+set grid
+set title  "Gráfico Função de Avaliação Media Sobra"
+set xlabel "Tempo"
+set ylabel "Inverso da qualidade Média Sobra"
+set xrange [0.00:170.00]
+set yrange [0.00:1000.00]
+plot "ArquivoMediaSobra"

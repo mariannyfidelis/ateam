@@ -1,17 +1,17 @@
 package HHDInternal;
 
 import java.awt.Point;
-import HHDInterfaces.IBin;
-import HHDInterfaces.IPeca;
-import HHDInterfaces.ICorte;
 import java.awt.Graphics;
-import HHDInterfaces.ISobra;
-import HHDInterfaces.IPedaco;
 import java.util.Iterator;
 import java.awt.Dimension;
+import HHDInterfaces.IBin;
+import HHDInterfaces.IPeca;
 import java.awt.Graphics2D;
-import HHDInterfaces.IDimensao2d;
+import HHDInterfaces.ICorte;
+import HHDInterfaces.ISobra;
+import HHDInterfaces.IPedaco;
 import java.util.ListIterator;
+import HHDInterfaces.IDimensao2d;
 import HHDInterfaces.IVisualization;
 import HHDInterfaces.IGenericSolution;
 import HHDInterfaces.IPecaIPedacoWrapper;
@@ -22,15 +22,14 @@ public class CutLayoutVisualization implements IVisualization{
 	private IGenericSolution solucao;
 	
 	//implementacao OK
-	public CutLayoutVisualization(IGenericSolution givenSolution)
-	{
+	public CutLayoutVisualization(IGenericSolution givenSolution){
 		solucao = givenSolution; 
 	}
 	
 	//implementacao OK
-	public void paint(Graphics g, Dimension d, int indice) 
-	{
-		float fator = calculeFator(d, solucao.getTamanhoChapa());
+	public void paint(Graphics g, Dimension d, int indice){
+            
+            float fator = calculeFator(d, solucao.getTamanhoChapa());
 		
 		IBin planoCorte = (IBin) solucao.retornePlanoDeCorte(indice);
 		
@@ -142,9 +141,6 @@ public class CutLayoutVisualization implements IVisualization{
 		ISobra areaDestino = procureSobra(pontoCliqueChapa, planoDeCorte.getListaSobras().listIterator());
 		
 		return solucao.mova(pedaco, areaDestino, indiceBin);
-		
-		
-
 	}
 
 	/**

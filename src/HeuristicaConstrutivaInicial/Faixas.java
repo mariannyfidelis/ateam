@@ -1,14 +1,16 @@
 package HeuristicaConstrutivaInicial;
 
+import HHDInternal.Ponto;
+import java.io.Serializable;
 import java.util.List;
 
-public class Faixas{
+public class Faixas implements Serializable{
 
-    private int W;
-    private int H;
+    private float W;
+    private float H;
     private double Pi;
-    private int Rw;
-    private int Rh;
+    private float Rw;
+    private float Rh;
     private int O;
     private List<Item> item;
     private Ponto pontoInferiorEsquerdo;
@@ -17,7 +19,7 @@ public class Faixas{
     private Ponto pontSupDRh;
     //poderia ter um rendimento por faixa = (AreaFaixa - Somatorio(AreaDosItens))
     
-    public Faixas() {     }
+    public Faixas() {}
 
     public Faixas(int w, int h) {
         
@@ -35,113 +37,71 @@ public class Faixas{
 
     }
 
-    /**
-     * @return the W
-     */
-    public int getW() {
+    public float getW() {
 
         return W;
     }
 
-    /**
-     * @param W the W to set
-     */
-    public void setW(int W) {
+    public void setW(float W) {
         
         this.W = W;
     }
 
-    /**
-     * @return the H
-     */
-    public int getH() {
+    public float getH() {
         
         return H;
     }
 
-    /**
-     * @param H the H to set
-     */
-    public void setH(int H) {
+    public void setH(float H) {
         
         this.H = H;
     }
 
-    /**
-     * @return the Pi
-     */
     public double getPi() {
         
         return Pi;
     }
 
-    /**
-     * @param Pi the Pi to set
-     */
     public void setPi(double Pi) {
         
         this.Pi = Pi;
     }
 
-    /**
-     * @return the Rw
-     */
-    public int getRw() {
-        
+    public float getRw() {
+    
         return Rw;
     }
 
-    /**
-     * @param Rw the Rw to set
-     */
-    public void setRw(int Rw) {
+    public void setRw(float Rw) {
         
         this.Rw = Rw;
     }
 
-    /**
-     * @return the Rh
-     */
-    public int getRh() {
+    public float getRh() {
         
         return Rh;
     }
 
-    /**
-     * @param Rh the Rh to set
-     */
-    public void setRh(int Rh) {
+    public void setRh(float Rh) {
         
         this.Rh = Rh;
     }
 
-    /**
-     * @return the O
-     */
     public int getO() {
         
         return O;
     }
 
-    /**
-     * @param O the O to set
-     */
     public void setO(int O) {
         
         this.O = O;
     }
 
-    /**
-     * @return the Item
-     */
     public List<Item> getItem() {
         
         return item;
     }
 
-    /**
-     * @param Item the Item to set
-     */
     public void setItem(List<Item> item) {
         
         this.item = item;

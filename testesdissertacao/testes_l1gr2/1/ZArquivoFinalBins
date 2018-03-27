@@ -1,0 +1,8 @@
+set grid
+set title  "Gráfico Número de Bins da Memória"
+set xlabel "Solucao"
+set ylabel "Bins"
+set xrange [0.00:100]
+set yrange [0.00:10.00]
+plot "ArquivoNumBins" with points
+replot "ArquivoMediaSobra" 

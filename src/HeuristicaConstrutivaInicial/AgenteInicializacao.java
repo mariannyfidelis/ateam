@@ -5,6 +5,8 @@ import AgCombinacao.ETiposServicosAgentes;
 import ComunicaoConcorrenteParalela.ETiposServicosServidor;
 import ComunicaoConcorrenteParalela.ObjetoComunicacao;
 import ComunicaoConcorrenteParalela.ServicoAgente;
+import HHDInternal.SolucaoHeuristica;
+import HHD_Exception.PecaInvalidaException;
 import Heuristicas.Solucao;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -185,21 +187,20 @@ public class AgenteInicializacao extends Agentes{
         SocketChannel socketChannel = null;
         ObjetoComunicacao ob_comunicacao = new ObjetoComunicacao();
         
-        List<Objeto> Solucao = new ArrayList<Objeto>();
+        List<Bin> Solucao = new ArrayList<Bin>();
 
         LinkedList<Heuristicas.Solucao> VetorSolucao = new LinkedList<Heuristicas.Solucao>();
         
-        LinkedList<HeuristicaConstrutivaInicial.Solucao> ListSolucao = 
-                                        new LinkedList<HeuristicaConstrutivaInicial.Solucao>();
+        LinkedList<SolucaoHeuristica> ListSolucao = new LinkedList<SolucaoHeuristica>();
 
         ArrayList<Item> L = new ArrayList<Item>();
         List<Item> Lc = new ArrayList<Item>();
 
-        L = Funcoes.LerArq();
-        Funcoes.OrdenaList(L);
+        L = FuncoesGrasp.LerArq();
+        FuncoesGrasp.OrdenaList(L);
 
         Lc = (List<Item>) L.clone();
-        Funcoes.ImprimeItens("Lista", Lc);
+        FuncoesGrasp.ImprimeItens("Lista", Lc);
 
         //VetorSolucao = HeuristicaGRASP.Grasp2d(L,L, 50, 50,0.5, 50, null);
         ListSolucao = HeuristicaGRASP.Grasp2d(L,L, 50, 50,0.5, 50, null);

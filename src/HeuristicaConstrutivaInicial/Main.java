@@ -1,37 +1,40 @@
 package HeuristicaConstrutivaInicial;
 
-import AgCombinacao.AgentesOperadores;
-import Heuristicas.Individuo;
-import j_HeuristicaArvoreNAria.Chapa;
-import j_HeuristicaArvoreNAria.Metodos_heuristicos;
-import java.io.FileNotFoundException;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Iterator;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
+import HHDInterfaces.IPedido;
+import Heuristicas.Individuo;
+import HHDInternal.SolucaoHeuristica;
+import java.io.FileNotFoundException;
+import SimulaGenetico.AgentesCombinacao;
+import HHD_Exception.PecaInvalidaException;
+import SimulaGenetico.ETiposServicosAgentes;
+import Utilidades.Chapa;
+import j_HeuristicaArvoreNAria.Metodos_heuristicos;
 
 public class Main {
     
     //Simula um agente que seleciona uma solução e aplica a Árvore N-Ária !!!!
-    public void aplicaAGLArvoreN(Solucao solucao){
+    public void aplicaAGLArvoreN(SolucaoHeuristica solucao){
        
        float larg, alt;
-       j_HeuristicaArvoreNAria.Solucao solucion = new j_HeuristicaArvoreNAria.Solucao();
+       j_HeuristicaArvoreNAria.SolucaoNAria solucion = new j_HeuristicaArvoreNAria.SolucaoNAria();
        Metodos_heuristicos m = new Metodos_heuristicos();
        
        larg = solucao.getTamanhoChapa().retorneBase();
        alt = solucao.getTamanhoChapa().retorneAltura();
        
-       
        //FFIH_BFIH(boolean rotaciona, boolean firstFit, LinkedList<Pedidos> listaPedidos, Chapa chapa
-       //c = m.FFIH_BFIH(true,true, pedidos, Funcoes.chapa); 
+       //c = m.FFIH_BFIH(true,true, pedidos, FuncoesGrasp.chapa); 
        solucion = m.FFIH_BFIH(true, false, recebeIndividuo_ListPedidos(solucao), new Chapa(larg, alt));
        solucion.imprime_solucao();
    } 
    
    //Esse método vai lá pra árvore N-aria
-   public LinkedList<j_HeuristicaArvoreNAria.Pedidos> recebeIndividuo_ListPedidos(Solucao solucao){
+   public LinkedList<j_HeuristicaArvoreNAria.Pedidos> recebeIndividuo_ListPedidos(SolucaoHeuristica solucao){
    
        Integer refPedido;
        //Aqui deve-se selecionar a Lista de Objetos
@@ -41,7 +44,7 @@ public class Main {
        j_HeuristicaArvoreNAria.Pedidos pedidos_arvore;
        
        List<Integer> list_item = new ArrayList<Integer>();
-       Iterator<Objeto> iter_objeto = solucao.getObjetos().iterator();
+       Iterator<Bin> iter_objeto = solucao.getObjetos().iterator();
             
         while(iter_objeto.hasNext()){
         
@@ -70,20 +73,20 @@ public class Main {
    }
     public static void main(String[] args) throws FileNotFoundException, IOException, PecaInvalidaException {
 
-        List<Solucao> solucao_GRASP = new LinkedList<Solucao>(); 
+        List<SolucaoHeuristica> solucao_GRASP = new LinkedList<SolucaoHeuristica>(); 
         
-        List<Objeto> Solucao = new ArrayList<Objeto>();
+        List<Bin> Solucao = new ArrayList<Bin>();
         
         LinkedList<Heuristicas.Solucao> VetorSolucao = new LinkedList<Heuristicas.Solucao>();
 
         ArrayList<Item> L = new ArrayList<Item>();
         List<Item> Lc = new ArrayList<Item>();
 
-        L = Funcoes.LerArq();
+        L = FuncoesGrasp.LerArq();
         
         List<IPedido> listaPedidosNaoAtendido = new ArrayList<IPedido>(L);
         
-        Funcoes.OrdenaList(L);
+        FuncoesGrasp.OrdenaList(L);
         
         System.out.println("Lista Pedidos Não-Atendidos");
         
@@ -91,7 +94,7 @@ public class Main {
             System.out.print(listaPedidosNaoAtendido.get(index).id() + " - ");
                 
         Lc = (List<Item>) L.clone();
-        Funcoes.ImprimeItens("\n\nLista", Lc);
+        FuncoesGrasp.ImprimeItens("\n\nLista", Lc);
 
         //VetorSolucao = HeuristicaGRASP.Grasp2d(L,L, 50, 50,0.5, 10, listaPedidosNaoAtendido);
         
@@ -102,10 +105,10 @@ public class Main {
         /*//Imprimir as soluções geradas !!!
         for (int i = 0; i < VetorSolucao.size();i++){
             
-            Heuristicas.Solucao s = new Heuristicas.Solucao();
+            Heuristicas.SolucaoNAria s = new Heuristicas.SolucaoNAria();
             s = VetorSolucao.get(i);
             
-            System.out.println("Solucao "+i+" Com "+s.getLista().size()+" individuos\n");
+            System.out.println("SolucaoNAria "+i+" Com "+s.getLista().size()+" individuos\n");
             
             LinkedList<Heuristicas.Individuo> ind = new LinkedList<Heuristicas.Individuo>();
             
@@ -123,17 +126,17 @@ public class Main {
                 System.out.println();
             }
          }*/
-        Iterator<Solucao> iter_solucao = solucao_GRASP.iterator();
+        Iterator<SolucaoHeuristica> iter_solucao = solucao_GRASP.iterator();
         int cont = 0;
         
         while(iter_solucao.hasNext()){
             
-            Solucao solucao_t = new Solucao();
+            SolucaoHeuristica solucao_t = new SolucaoHeuristica();
             solucao_t = iter_solucao.next();
             
             System.out.println("Solucao "+cont+" Com "+solucao_t.getObjetos().size()+" individuos\n");
             
-            Iterator<Objeto> iter_objeto = solucao_t.getObjetos().iterator();
+            Iterator<Bin> iter_objeto = solucao_t.getObjetos().iterator();
             
             while(iter_objeto.hasNext()){
             //for(int k = 0; k < solucao_t.getObjetos().size(); k++){
@@ -167,13 +170,31 @@ public class Main {
        // System.out.println(" ### Crossover de 1 ponto 1 ###");
        // AgentesOperadores.operadorCrossoverPonto1(ind1,ind2);
         
-        System.out.println("\n\n ### Crossover de 1 ponto 1 VV  ###");
-        AgentesOperadores.operadorCrossoverPonto1_v(ind1, ind2);
+       //Util.FuncoesGrasp.setVetor_info(Util.FuncoesGrasp.atribui_info(null, pedidos));
+       LinkedList<j_HeuristicaArvoreNAria.Pedidos> p = solucao_GRASP.get(0).getIPedidos();
+       
+       j_HeuristicaArvoreNAria.Pedidos[] vetPedid = new j_HeuristicaArvoreNAria.Pedidos[p.size()];
+       
+       Utilidades.Funcoes.atribui_info(p, vetPedid);
+       
+       /*System.out.println("\n\n ### Crossover de 1 ponto 1 VV  ###");
+       
+       AgentesOperadores.operadorCrossoverPonto1_v(ind1, ind2);
+       
+       System.out.println("\n\n ### Crossover de 1 ponto 1 ###");
+       
+       AgentesOperadores.operadorCrossoverPonto1(ind1, ind2);
+       */
+       //System.out.println("\n\n ### Crossover de 2 pontos ###");
         
-        System.out.println("\n\n ### Crossover de 2 pontos ###");
-        
-        //Testando o crossover de 2 pontos
-        AgentesOperadores.operadorCrossoverPonto2(ind1, ind2);
+       //Testando o crossover de 2 pontos
+       //AgentesOperadores.operadorCrossoverPonto2(ind1, ind2);
+       
+        System.out.println("\n\n##############3 Testando agente combinação ##########");
+       //Testar Agentes Combinacao
+       AgentesCombinacao ag = new AgentesCombinacao(ETiposServicosAgentes.AleatorioPior);
+               
+       ag.TotalmenteAleatorioSolucao(solucao_GRASP.get(0));
    }
     
    

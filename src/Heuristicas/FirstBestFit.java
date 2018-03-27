@@ -3,9 +3,9 @@ package Heuristicas;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import Util.Chapa;
-import Util.Funcoes;
-import Util.Pedidos;
+import Utilidades.Chapa;
+import Utilidades.Funcoes;
+import j_HeuristicaArvoreNAria.Pedidos;
 
 public class FirstBestFit {
 

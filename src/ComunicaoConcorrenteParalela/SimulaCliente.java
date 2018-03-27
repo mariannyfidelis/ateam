@@ -209,7 +209,7 @@ public class SimulaCliente implements Runnable{
     }
     public static void main(String args[]){
     //Chama Conexão com o Servidor
-        
+        int porta_comunicacao = 100;
         criaConexaoServidor(porta_comunicacao);
         
         //Verificar o encerramento da conexão 

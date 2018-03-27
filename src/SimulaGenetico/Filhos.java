@@ -2,7 +2,7 @@ package SimulaGenetico;
 
 import Heuristicas.Individuo;
 
-public /*final*/ class Filhos {
+public class Filhos {
 
 	private Individuo filho1;
 	private Individuo filho2;

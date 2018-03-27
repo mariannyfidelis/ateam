@@ -1,7 +1,9 @@
 package j_HeuristicaArvoreNAria;
 
+import java.io.Serializable;
 
-public class Item {
+
+public class Item implements Serializable{
 
 	private int id;
 	private float largura;
@@ -10,64 +12,65 @@ public class Item {
 	private float area;
 	
 	public Item(int id, float larg, float alt, boolean rotacao){
-		this.id = id;
-		this.largura = larg;
-		this.altura = alt;
-		this.rotacao = rotacao;
+            
+            this.id = id;
+            this.largura = larg;
+            this.altura = alt;
+            this.rotacao = rotacao;
 	}
 	public Item(){}
 	
 	
 	public int getId(){
 		
-		return id;
+            return id;
 	}
 	
 	public void setId(int new_id){
-		id = new_id;
+            
+            id = new_id;
 	}
 	
 	public float getLargura(){
 		
-		return largura;
+            return largura;
 	}
 	
 	public void setLargura(float larg){
 		
-		largura = larg;
+            largura = larg;
 	}
 	
 	public float getAltura(){
 		
-		return altura;
+            return altura;
 	}
 	
 	public void setAltura(float alt){
 		
-		altura = alt;
+            altura = alt;
 	}
 	
 	public float getArea(){
 		
-		area = altura * largura;
+            area = altura * largura;
 		
-		return area;
-		
+            return area;
 	}
 	
 	public void setArea(float are){
 		
-		area = are;
+            area = are;
 	}
 	
 	public boolean getRotacao() {
 		
-		return rotacao;
+            return rotacao;
 	}
 	
 	public void setRotacao(boolean rotacao) {
 		
-		this.rotacao = rotacao;
+            this.rotacao = rotacao;
 	}
 	
 }

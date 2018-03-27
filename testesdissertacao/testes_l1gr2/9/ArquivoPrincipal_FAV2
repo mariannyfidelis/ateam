@@ -1,0 +1,8 @@
+reset
+set grid
+set title  "Gráfico Função de Avaliação FAV2 Melhorada"
+set xlabel "Tempo"
+set ylabel "Inverso da qualidade FAV2"
+set xrange [0.00:855.00]
+set yrange [0.00:100.00]
+plot "ArquivoFAV2"

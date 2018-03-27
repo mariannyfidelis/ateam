@@ -1,0 +1,9 @@
+reset
+set grid
+set title  "Gráfico 1"
+set xlabel "Tempo"
+set ylabel "Qualidade Máxima Área Livre"
+set ytics 1.0
+set xrange [0.00:10.00]
+set yrange [0.00:2500.00]
+plot ArquivoGrafico1.txt

@@ -1,12 +1,12 @@
 package AgCombinacao;
 
+import java.nio.ByteBuffer;
 import algoritmosAgCombinacao.*;
 import Heuristicas.Solucao;
-import ComunicaoConcorrenteParalela.ObjetoComunicacao;
-import ComunicaoConcorrenteParalela.ServicoAgente;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import ComunicaoConcorrenteParalela.ServicoAgente;
+import ComunicaoConcorrenteParalela.ObjetoComunicacao;
 
 public class AgentesCombinacao extends Agentes{
 
@@ -53,60 +53,60 @@ public class AgentesCombinacao extends Agentes{
     
    public ObjetoComunicacao processaInformacao(ByteBuffer byteBuffer, ETiposServicosAgentes tipo) throws IllegalArgumentException{
 
-      Solucao solucao = new Solucao();
+      Solucao solucao_ = new Solucao();
       ObjetoComunicacao objeto = new ObjetoComunicacao();
       objeto = deserializaMensagem(byteBuffer);
       
       switch(tipo){
          
          case TotalmenteAleatorioSolucao:
-              solucao = TotalmenteAleatorioSolucao(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = TotalmenteAleatorioSolucao(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
              
          case AleatorioPior:
-              solucao = AleatorioPior(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = AleatorioPior(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
              
          case AleatorioMelhor:
-              solucao = AleatorioMelhor(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = AleatorioMelhor(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
                       
          case Melhor_Dois:
-              solucao = Melhor_Dois(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = Melhor_Dois(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
        
          case Melhor_Pior:
-              solucao = Melhor_Pior(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = Melhor_Pior(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
                                    
          case MelhorSol_Aleatorio:
-              solucao = MelhorSol_Aleatorio(objeto.getSolucao());  
-              objeto.setSolucao(solucao);
+              solucao_ = MelhorSol_Aleatorio(objeto.getSolucao());  
+              objeto.setSolucao(solucao_);
          break;
                                                  
          case MelhorSol_MelhorIndividuo:
-              solucao = MelhorSol_MelhorIndividuo(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = MelhorSol_MelhorIndividuo(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
          
          case AleatorioMelhorS:
-              solucao = AleatorioMelhorS(objeto.getSolucao()); 
-              objeto.setSolucao(solucao);
+              solucao_ = AleatorioMelhorS(objeto.getSolucao()); 
+              objeto.setSolucao(solucao_);
          break;
              
          case MelhorSol_Melhor_DoisIndv:
-              solucao = MelhorSol_Melhor_DoisIndv(objeto.getSolucao()); 
-              objeto.setSolucao(solucao);
+              solucao_ = MelhorSol_Melhor_DoisIndv(objeto.getSolucao()); 
+              objeto.setSolucao(solucao_);
          break;
              
          case MelhorSol_Maior_MenorIndv:
-              solucao = MelhorSol_Maior_MenorIndv(objeto.getSolucao());
-              objeto.setSolucao(solucao);
+              solucao_ = MelhorSol_Maior_MenorIndv(objeto.getSolucao());
+              objeto.setSolucao(solucao_);
          break;
       }
       
@@ -425,6 +425,7 @@ public class AgentesCombinacao extends Agentes{
     }
    
    //CombinacaoMelhor_S1
+   
    public Solucao MelhorSol_Aleatorio(Solucao solution_memoria){
 
         this.solucao.setSolucao(solution_memoria);
@@ -478,6 +479,7 @@ public class AgentesCombinacao extends Agentes{
       return this.solucao;
     }
    //CombinacaoMelhor S_2
+   
    public Solucao MelhorSol_MelhorIndividuo(Solucao solution_memoria){
 		
         this.solucao.setSolucao(solution_memoria);		
@@ -641,6 +643,7 @@ public class AgentesCombinacao extends Agentes{
 
        return this.solucao;	
     }
+   
    //CombinacaoMelhor S_5 
    public Solucao MelhorSol_Maior_MenorIndv(Solucao solution_memoria){
 	

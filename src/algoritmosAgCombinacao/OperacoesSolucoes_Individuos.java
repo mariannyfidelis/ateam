@@ -6,7 +6,7 @@ import java.util.Random;
 import Heuristicas.Memoria;
 import Heuristicas.Individuo;
 import Heuristicas.Solucao;
-import Util.Funcoes;
+import Utilidades.Funcoes;
 
 public class OperacoesSolucoes_Individuos{
 

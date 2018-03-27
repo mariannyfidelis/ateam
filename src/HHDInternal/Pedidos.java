@@ -2,11 +2,12 @@ package HHDInternal;
 
 import HHDInterfaces.IDimensao2d;
 import HHDInterfaces.IPedido;
+import java.io.Serializable;
 
-public class Pedidos implements IPedido{
+public class Pedidos implements IPedido, Serializable{
 
     int id;
-    int quant;
+    int quantidade;
     IDimensao2d dimensao;
     String cod;
     int atendidos;
@@ -15,18 +16,17 @@ public class Pedidos implements IPedido{
     public Pedidos(int id, float largura,float altura){
 	
         this.setId(id);
-        this.quant = 1;
+        //this.id = id;
+        this.quantidade = 1;
         this.atendidos = 0;
         this.dimensao = new Dimensao2D(largura, altura);
     }
-    
-    
+        
     @Override
     public IDimensao2d retorneDimensao() {
         
         return this.dimensao;
     }
-    
     
     public IDimensao2d retorneDimensao(int rot) {
         
@@ -54,18 +54,22 @@ public class Pedidos implements IPedido{
     @Override
     public int quantidade() {
         
-        return quant;
+        return quantidade;
     }
 
     @Override
     public void atendaUmPedido() {
         
-        if(atendidos < quant) 
+        this.quantidade = this.quantidade - 1;
+        
+        if(atendidos < quantidade) 
              atendidos++;
     }
 
     @Override
     public void devolvaPedido() {
+        
+        this.quantidade = this.quantidade + 1;
         
         if(atendidos > 0)
              atendidos--;

@@ -2,5 +2,9 @@ package ComunicaoConcorrenteParalela;
 
 public enum ETiposServicosServidor {
 
-    MelhorSolucao, PiorSolucao, Sol_Aleatorio, AtualizaSolucao;
+    //Serviços  AGENTE --> SERVIDOR
+    Inserir_Solucao, AtualizaSolucao,
+    
+    //Serviços  SERVIDOR --> AGENTE
+    MelhorSolucao, PiorSolucao, Solucao_Aleatoria , Roleta;
 }

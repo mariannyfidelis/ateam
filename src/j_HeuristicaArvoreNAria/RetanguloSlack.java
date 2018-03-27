@@ -1,7 +1,9 @@
 package j_HeuristicaArvoreNAria;
 
+import java.io.Serializable;
 
-public class RetanguloSlack {
+
+public class RetanguloSlack implements Serializable{
 
 	private float ws_p;
 	private float hs_p;

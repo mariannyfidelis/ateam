@@ -1,12 +1,12 @@
 package AgCombinacao;
 
-import Util.Funcoes;
+import Utilidades.Funcoes;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
 import algoritmosAgCombinacao.Filhos;
 import Heuristicas.Individuo;
-import Util.ComparadorIndividuos;
+import Utilidades.ComparadorIndividuos;
 
 public class AgentesOperadores {
 

@@ -1,9 +1,10 @@
 package HHDInternal;
 
 import HHDInterfaces.IDimensao2d;
+import java.io.Serializable;
 
 
-public class AreaRetangular implements IDimensao2d{
+public class AreaRetangular implements IDimensao2d, Serializable{
 	
     private float base;
     private float altura;
@@ -15,21 +16,25 @@ public class AreaRetangular implements IDimensao2d{
         this.altura = altura;
     }
 	
+    @Override
     public float retorneArea(){
 
        return base * altura;
     }
 
+    @Override
     public float retorneBase(){
 
        return base;
     }
 
+    @Override
     public float retorneAltura(){
 
         return altura;
     }
 
+    @Override
     public int compareAreas(IDimensao2d dimensao){
 
          float diferenca;

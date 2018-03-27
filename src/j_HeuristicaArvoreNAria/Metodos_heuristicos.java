@@ -1,6 +1,7 @@
 package j_HeuristicaArvoreNAria;
 
-import HeuristicaConstrutivaInicial.IPedido;
+import HHDInternal.Dimensao2D;
+import Utilidades.Chapa;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,183 +9,207 @@ import java.util.Queue;
 
 public class Metodos_heuristicos{
 
-	LinkedList<Bin> solution = null;
-	
-	int var_rot;
-	int no_j, no_k;
-	int bin_id = 1;
-	 
-	boolean rotacao_item = false;
-	boolean ant_rotacao_item;
-	boolean indica_rotacao;
-	
-	No raiz_insert = null;
-	No no__subnode = null;
-	No no__insert = null;
+    LinkedList<Bin> solution = null;
+
+    int var_rot;
+    int no_j, no_k;
+    int bin_id = 1;
+
+    boolean rotacao_item = false;
+    boolean ant_rotacao_item;
+    boolean indica_rotacao;
+
+    No raiz_insert = null;
+    No no__subnode = null;
+    No no__insert = null;
 
 /*
  * 
  * MÉTODO DE INSERÇÃO FIRST E BEST FIT -->>> HEURÍSTICA DE CONSTRUÇÃO DE SOLUÇÕES !!!!!!
  * 
  * */	
-	
-	public Solucao FFIH_BFIH(boolean rotaciona, boolean firstFit, LinkedList<Pedidos> listaPedidos, Chapa chapa){
-	
-		indica_rotacao = rotaciona;
-		
-		if(indica_rotacao == true)	var_rot = 2;
-		else var_rot = 1;
-		
-			
-		//Funcoes.ordenaPedidosDecrescente(listaPedidos);
-		
-		int i, cont = 0, idBin;
-		int index =0;
-		Pedidos pedido;
-				
-		No no;
-		No raiz = null;
-		No raiz1 = null;
-		Bin bin_ = null;
-		Iterator<Bin> iterator;			
-		TiposInsercao insBest = TiposInsercao.Vazio;
-		
-		Solucao num_bins = new Solucao();
-		
-		InformacaoInsercao informacaoInsercao;
-		ArrayList<InformacaoInsercao> array_informacao_insercao = new ArrayList<InformacaoInsercao>();
-		ArrayList<Integer> array_id = new ArrayList<Integer>();
-		
-		for (i = 0 ; i < listaPedidos.size(); i++){
-			
-			pedido = (Pedidos) listaPedidos.get(i);
-		    
-			System.out.println("\n\nPedido "+(i+1));
-			pedido.imprimePedido();
-			
-			no = new No(i+1,pedido.retornaLargura(),pedido.retornaAltura());
-			no.setPai(null);
-			no.calcula_retangulo_minimo(no, false);
-			
-			//Deve-se Limpar as informacoes do array agora para o novo pedido
-			InformacaoInsercao inf = new InformacaoInsercao();
-			
-			for (InformacaoInsercao ing : array_informacao_insercao) {
-				
-				array_informacao_insercao.set(index, inf);
-				index++;
-			}
-			
-			iterator = num_bins.listaBinSolucao();
-			
-			while(iterator.hasNext()){
-				
-				cont++;
-				bin_ = iterator.next();
-				idBin = bin_.getID();
-				raiz = bin_.root();
-											 
-				if(no.getItem().getArea() <= raiz.getMaxima_area_livre()){	
-					
-					
-					informacaoInsercao = InsEnum(bin_, no, raiz);
-			        insBest = informacaoInsercao.getInsBest(); 		
-					array_informacao_insercao.set(idBin -1, informacaoInsercao);
-					
-				}
-				
-				if((firstFit == true) && (insBest != TiposInsercao.Vazio)){
-					
-					System.out.println("Entrei no loop FIRST FIT\n");
 
-					break;
-				}
-				//if(firstFit == false){
-					
-					//array_id.add(idBin);
-				//}
-				
-				
-			}
-			
-			informacaoInsercao = InformacaoInsercao.retornaMelhorSolucao(array_informacao_insercao, cont);
-			
-			cont = 0;//Atualiza novamente o contador !!! 
-			index = 0;
-			
-			bin_ = informacaoInsercao.getBin_Insercao();
-			insBest = informacaoInsercao.getInsBest();
-	        raiz = informacaoInsercao.getBin_Insercao().root();
-	        raiz_insert = informacaoInsercao.getRaiz_Insert();
-	        no__subnode = informacaoInsercao.getAsSubnode();
-			rotacao_item = informacaoInsercao.getRotacao_Item();
-			no_j = informacaoInsercao.getNo_j();
-			no_k = informacaoInsercao.getNo_k();
-			
-			if(insBest != TiposInsercao.Vazio){
-				
-				if (insBest == TiposInsercao.HorizRoot){
-					
-					System.out.println("AQUI VOU INSERIR HORIZ ROOT !!!!");	
-					raiz1 = Bin.InsertVert_HorizRoot(raiz, no, No_orientacao.horizontal, rotacao_item);
-					bin_.setRoot(raiz1);
-					
-					Queue<No> fila = null;
-					Bin.busca_largura(raiz1, fila);
-				}
-				else if (insBest == TiposInsercao.VertRoot){
-					
-					System.out.println("AQUI VOU INSERIR VERT ROOT !!!!");
-					raiz1 = Bin.InsertVert_HorizRoot(raiz, no, No_orientacao.vertical, rotacao_item);
-					bin_.setRoot(raiz1);
-					
-					Queue<No> fila = null;
-					Bin.busca_largura(raiz1, fila);
-											
-				}
-				else if (insBest == TiposInsercao.AsSubnode){
-					
-					System.out.println("AQUI VOU INSERIR ASSUBNODE!!");
-					
-					Bin.InsertAsSubnode(no__subnode, no, rotacao_item);
-					
-				}
-				else if (insBest == TiposInsercao.InParallelTo){
-					
-					System.out.println("AQUI VOU INSERIR INPARELL TO!!!");
-					Bin.InsertInParallelTo2(raiz_insert, no, no_j, no_k, rotacao_item);
-				} else{}
-				
-			}
-			else{
-			
-				System.out.println("\nAqui adiciono o item  a uma nova bin !!!");
-								
-				Bin bins = new Bin();
-				bins.setID(bin_id);
-				
-				no.calcula_retangulo_maximo(no, true);
-				no.calcula_slack(no);
-								
-				no.setMaxima_area_livre(no.maior_area_livre(no));
-				
-				bins.adiciona_item(no);
-				bins.setRoot(no);
-				
-				num_bins.adicionaBin(bins);
-				
-				bin_id = bin_id + 1; 
-				
-				informacaoInsercao.setBin_Insercao(bins);
-				array_informacao_insercao.add(informacaoInsercao);
-			}
-		}//fim for
-		
-		return num_bins;
-	}
+    public SolucaoNAria FFIH_BFIH(boolean rotaciona, boolean firstFit, LinkedList<Pedidos> listaPedidos, Chapa chapa){
+	
+        indica_rotacao = rotaciona;
+
+        if(indica_rotacao == true)	var_rot = 2;
+        else var_rot = 1;
+
+        //Funcoes.ordenaPedidosDecrescente(listaPedidos);
+
+        int i, cont = 0, idBin;
+        int index = 0;
+        Pedidos pedido;
+
+        No no;
+        No raiz  = null;
+        No raiz1 = null;
+        Bin bin_ = null;
+        Iterator<Bin> iterator;			
+        TiposInsercao insBest = TiposInsercao.Vazio;
+
+        SolucaoNAria num_bins = new SolucaoNAria();
+
+        InformacaoInsercao informacaoInsercao;
+        ArrayList<InformacaoInsercao> array_informacao_insercao = new ArrayList<InformacaoInsercao>();
+        ArrayList<Integer> array_id = new ArrayList<Integer>();
+
+        for (i = 0 ; i < listaPedidos.size(); i++){
+        
+            insBest = TiposInsercao.Vazio;
+            
+            pedido = (Pedidos) listaPedidos.get(i);
+
+            System.out.println("\n\nPedido "+(i+1));
+            pedido.imprimePedido();
+
+            no = new No(i+1,pedido.retornaLargura(),pedido.retornaAltura());
+            no.setPai(null);
+            no.calcula_retangulo_minimo(no, false);
+            //no.calcula_retangulo_maximo(no, false);
+            //Deve-se Limpar as informacoes do array agora para o novo pedido
+            InformacaoInsercao inf = new InformacaoInsercao();
+
+            for (InformacaoInsercao ing : array_informacao_insercao) {
+
+                array_informacao_insercao.set(index, inf);
+                index++;
+            }
+
+            iterator = num_bins.listaBinSolucao();
+
+            while(iterator.hasNext()){
+
+                cont++;
+                bin_  = iterator.next();
+                idBin = bin_.getID();
+                raiz  = bin_.root();
+
+                if(no.getItem().getArea() <= raiz.getMaxima_area_livre()){	
+
+                    informacaoInsercao = InsEnum(bin_, no, raiz);
+                    insBest = informacaoInsercao.getInsBest(); 		
+                    array_informacao_insercao.set(idBin -1, informacaoInsercao);
+                }
+
+                if((firstFit == true) && (insBest != TiposInsercao.Vazio)){
+
+                    System.out.println("Entrei no loop FIRST FIT\n");
+
+                    break;
+                }
+                //if(firstFit == false){
+
+                        //array_id.add(idBin);
+                //}
+            }
+
+            informacaoInsercao = InformacaoInsercao.retornaMelhorSolucao(array_informacao_insercao, cont);
+
+            cont = 0;//Atualiza novamente o contador !!! 
+            index = 0;
+
+            bin_    = informacaoInsercao.getBin_Insercao();
+            insBest = informacaoInsercao.getInsBest();
+            raiz    = informacaoInsercao.getBin_Insercao().root();
+            raiz_insert  = informacaoInsercao.getRaiz_Insert();
+            no__subnode  = informacaoInsercao.getAsSubnode();
+            rotacao_item = informacaoInsercao.getRotacao_Item();
+            no_j = informacaoInsercao.getNo_j();
+            no_k = informacaoInsercao.getNo_k();
+
+            /*Aqui deve-se atualizar a Função de Avaliação (FAV) da placa*/
+            if(insBest != TiposInsercao.Vazio){
+
+                if (insBest == TiposInsercao.HorizRoot){
+
+                    System.out.println("AQUI VOU INSERIR HORIZ ROOT !!!!");
+                    System.out.println("Bin fav --> "+ bin_.getFav()+"\n");
+                    bin_.setFav(bin_.getFav() + no.getItem().getArea());
+                    System.out.println("Bin fav depois --> "+ bin_.getFav()+"\n");
+                    
+                    raiz1 = Bin.InsertVert_HorizRoot(raiz, no, No_orientacao.horizontal, rotacao_item);
+                    bin_.setRoot(raiz1);
+
+                    Queue<No> fila = null;
+                    Bin.busca_largura(raiz1, fila);
+                    
+                }
+                else if (insBest == TiposInsercao.VertRoot){
+
+                    System.out.println("AQUI VOU INSERIR VERT ROOT !!!!");
+                    System.out.println("Bin fav --> "+ bin_.getFav()+"\n");
+                    bin_.setFav(bin_.getFav() + no.getItem().getArea());
+                    System.out.println("Bin fav depois --> "+ bin_.getFav()+"\n");
+                    
+                    raiz1 = Bin.InsertVert_HorizRoot(raiz, no, No_orientacao.vertical, rotacao_item);
+                    bin_.setRoot(raiz1);
+
+                    Queue<No> fila = null;
+                    Bin.busca_largura(raiz1, fila);
+
+                }
+                else if (insBest == TiposInsercao.AsSubnode){
+
+                    System.out.println("AQUI VOU INSERIR ASSUBNODE!!");
+                    System.out.println("Bin fav --> "+ bin_.getFav()+"\n");
+                    bin_.setFav(bin_.getFav() + no.getItem().getArea());
+                    System.out.println("Bin fav depois --> "+ bin_.getFav()+"\n");
+                    
+                    Bin.InsertAsSubnode(no__subnode, no, rotacao_item);
+
+                }
+                else if (insBest == TiposInsercao.InParallelTo){
+
+                    System.out.println("AQUI VOU INSERIR INPARELL TO!!!");
+                    System.out.println("Bin fav --> "+ bin_.getFav()+"\n");
+                    
+                    bin_.setFav(bin_.getFav() + no.getItem().getArea());
+                    System.out.println("Bin fav depois --> "+ bin_.getFav()+"\n");
+                    
+                    Bin.InsertInParallelTo2(raiz_insert, no, no_j, no_k, rotacao_item);
+                } else{}
+
+            }
+            else{
+
+                System.out.println("\nAqui adiciono o item  a uma nova bin !!!");
+
+                Bin bins = new Bin();
+                bins.setID(bin_id);
+                System.out.println("Fav da bin antes --> "+ bins.getFav());
+                bins.setFav(new Double(bins.getFav().floatValue()+no.getItem().getArea()));
+                System.out.println("Fav da bin depois --> "+ bins.getFav());
+                
+                no.calcula_retangulo_maximo(no, true);
+                no.calcula_slack(no);
+
+                no.setMaxima_area_livre(no.maior_area_livre(no));
+
+                bins.adiciona_item(no);
+                bins.setRoot(no);
+
+                num_bins.adicionaBin(bins);
+
+                bin_id = bin_id + 1; 
+
+                informacaoInsercao.setBin_Insercao(bins);
+                array_informacao_insercao.add(informacaoInsercao);
+            }
+        }//fim for
+
+        /*Aqui termina o laço e todas as bins estão com suas FAV calculas
+        então aplica-se o cálculoFAV_FAV2 */
+        num_bins.setTamanhoChapa(new Dimensao2D((float) chapa.getLargura(), (float) chapa.getAltura()));
+        
+        calculaFAV_FAV2(num_bins, chapa);
+        
+        return num_bins; //solucaoNAria
+    }
 	
 	
-	public InformacaoInsercao InsEnum(Bin bin, No item_, No raiz){ 
+    public InformacaoInsercao InsEnum(Bin bin, No item_, No raiz){ 
 		
 		Item item = item_.getItem();
 		
@@ -221,7 +246,7 @@ public class Metodos_heuristicos{
 			if(!(raiz.getTipo_corte().corte == No_orientacao.horizontal)){
 					
 				w_ = ( (raiz.getRetanguloSlack().getW_s_p() ) - wi);
-				h_ = ( Chapa.getAltura() - hi );
+				h_ = ( (float) Chapa.getAltura() - hi );
 				n_ = Math.abs( (raiz.getRetanguloMinimo().getH_p()) - hi );
 					
 				fitness = raiz.fitness(w_, h_, n_);
@@ -250,7 +275,7 @@ public class Metodos_heuristicos{
 			
 			if(!(raiz.getTipo_corte().corte == No_orientacao.vertical)){
 					
-				w_ = ( Chapa.getLargura() - wi);
+				w_ = ((float) Chapa.getLargura() - wi);
 				h_ = ( (raiz.getRetanguloSlack().getH_s_p()) - hi);
 				n_ = Math.abs((raiz.getRetanguloMinimo().getW_p()) - wi);
 				
@@ -278,10 +303,10 @@ public class Metodos_heuristicos{
 			}//end-if
 			
 			if(melhor_fitness == 1){
-				System.out.println("Vou dar um break em InsEnum!!!");
 				
-				
-				return informacaoInsercao;
+                            System.out.println("Vou dar um break em InsEnum!!!");
+			
+                            return informacaoInsercao;
 			}
 	    }//end for
 			
@@ -1096,7 +1121,7 @@ public class Metodos_heuristicos{
  * 
  * */	
 	
-	public Solucao Critical_Fit(LinkedList<Pedidos> itens_pedidos){
+	public SolucaoNAria Critical_Fit(LinkedList<Pedidos> itens_pedidos){
 
 		int i, j = 0, d;
 		int[] nDom = new int[itens_pedidos.size()];		
@@ -1157,7 +1182,7 @@ public class Metodos_heuristicos{
 		Bin bin_atual, melhor_Bin = null; //Depois transferir variáveis para fora dos loops na hora dos testes !!!!  
 		Bin b;
 		
-		Solucao solucao = new Solucao();
+		SolucaoNAria solucao = new SolucaoNAria();
 				
 		LinkedList<Pedidos> list_itens_ndominados = new LinkedList<Pedidos>();
 		Iterator<Pedidos> iterados_pedidos = itens_pedidos.iterator();
@@ -1382,182 +1407,262 @@ public class Metodos_heuristicos{
  * 
  * */
 	
-	public Solucao Justificacao(Solucao solucao, int num_execucoes, LinkedList<Pedidos> itens_pedidos, Chapa chapa){
+  public SolucaoNAria Justificacao(SolucaoNAria solucao, int num_execucoes, Pedidos[] itens_pedidos, Chapa chapa){
 		
-		int bin_id = 1;
-		float somatorio = 0, LB;
-				
-		Pedidos pedido;
-		InformacaoInsercao informacaoInsercao = new InformacaoInsercao();
-		Iterator<Pedidos> iterator = itens_pedidos.iterator();
-		ArrayList<InformacaoInsercao> array_informacao_insercao = new ArrayList<InformacaoInsercao>();
+        int bin_id = 1, cont = 0;
+        float somatorio = 0, LB;
+	
+        Pedidos pedido;
+        InformacaoInsercao informacaoInsercao = new InformacaoInsercao();
+        //Iterator<Pedidos> iterator = itens_pedidos.iterator();
+        ArrayList<InformacaoInsercao> array_informacao_insercao = new ArrayList<InformacaoInsercao>();
+	
+        System.out.println("Justified - Tamanho da solucao recebida -> "+ solucao.retornaSolucao().size());
+        
+        while(cont < itens_pedidos.length){
+	
+            //pedido = iterator.next();
+            pedido = itens_pedidos[cont];
+            somatorio = somatorio + pedido.retornaArea();
+            
+            cont++;
+        }
+        System.out.println("Somatorio justification --> "+ somatorio);
+	
+        float lim = somatorio/(float) Chapa.getArea();
+        LB = Math.round(lim);
+        
+        if(LB - lim < 0) LB = LB+1;
+        
+        System.out.println("LB -->> "+LB);
+
+        if(solucao.size() == LB){
+
+            System.out.println("Vou retornar a solução pois esta já é ótima");
+            return solucao;
+        }
+
+        SolucaoNAria solucao2 = new SolucaoNAria(solucao);
+        //solucao2.atribui_solucao(solucao); //Comentário por enquanto para realizar os testes !
+
+        LinkedList<Pedidos> lista_itens;
+        Iterator<Bin> bins_sol2;
+
+        //int id_bin;
+        No no;
+        Bin bin_S2;
+        Bin bin = null;
+        No raiz_bin = null;
+
+        TiposInsercao insBest;
+        Iterator<Pedidos> iterator_pedidos;
 		
-		while(iterator.hasNext()){
-		    
-			pedido = iterator.next();
-			somatorio = somatorio + pedido.retornaArea(); 
-	    }
-		
-		LB = (somatorio/Chapa.getArea());
-		
-		System.out.println("LB -->> "+LB);
-		
-		if(solucao.size() == LB){
-			
-			return solucao;
-		}
-		
-		Solucao solucao2 = new Solucao();
-		solucao2.atribui_solucao(solucao);
-		
-		LinkedList<Pedidos> lista_itens;
-		Iterator<Bin> bins_sol2;
-		
-		//int id_bin;
-		
-		No no;
-		Bin bin_S2;
-		Bin bin = null;
-		No raiz_bin = null;
-		
-		TiposInsercao insBest;
-		Iterator<Pedidos> iterator_pedidos;
-		
-		for(int exec = 1; exec <= num_execucoes; exec++){
-		
-			Solucao solucao1 = new Solucao();//Talvez só precise de uma instância e está é atualizada com vazio !!!
-			bins_sol2 = solucao2.listaBinSolucao();
-			
-			while(bins_sol2.hasNext()){
-				
-				bin_S2 = bins_sol2.next();
-		
-				//I <- itens da última bin de X2 (Solução 2)
-				lista_itens = bin_S2.getItensBin(solucao2.resgataUltimaBin()); 
-				
-				//Remove a última bin de Solução 2
-				solucao2.removeUltimaBin();
-				
-				Funcoes.ordenaPedidosDecrescente(lista_itens);	
-		
-				iterator_pedidos = lista_itens.iterator();
-				
-				while(iterator_pedidos.hasNext()){
-					
-					pedido = iterator_pedidos.next();
-														    
-				    no = new No(pedido.getId(),pedido.retornaLargura(),pedido.retornaAltura());
-					no.setPai(null);
-					no.calcula_retangulo_minimo(no, false);
-				    
-					insBest = TiposInsercao.Vazio;
-				    				    
-				    Iterator<Bin> iterator_bin = solucao1.listaBinSolucao();
-					
-				    while(iterator_bin.hasNext()){
-						
-						bin = iterator_bin.next();
-						raiz_bin = bin.root();
-											
-						informacaoInsercao = InsEnum(bin, no, raiz_bin);
-						insBest = informacaoInsercao.getInsBest();
-						array_informacao_insercao.add(informacaoInsercao);//Verificar isso aqui e adaptar como no FIRST !!!
-						
-						if(insBest != TiposInsercao.Vazio){
-							
-							break;
-						}		
-					}
-					
-				    //Aqui não precisa pois no algoritmo de Justificação ele executa o First FIT !!!
-				    //informacaoInsercao = InformacaoInsercao.retornaMelhorSolucao(array_informacao_insercao,0);//verificar ta errado
-				    
-				    insBest = informacaoInsercao.getInsBest();
-				    bin = informacaoInsercao.getBin_Insercao();
-				    raiz_bin = informacaoInsercao.getBin_Insercao().root();
-				    no__subnode = informacaoInsercao.getAsSubnode();
-				    raiz_insert = informacaoInsercao.getRaiz_Insert();
-				    rotacao_item = informacaoInsercao.getRotacao_Item();
-				    no_j = informacaoInsercao.getNo_j();
-				    no_k = informacaoInsercao.getNo_k();
-				    
-					if(insBest != TiposInsercao.Vazio){
-						
-						No raiz1;
-						
-						if (insBest == TiposInsercao.HorizRoot){
-							
-							System.out.println("AQUI VOU INSERIR HORIZ ROOT !!!!");	
-							raiz1 = Bin.InsertVert_HorizRoot(raiz_bin, no, No_orientacao.horizontal, rotacao_item);
-							bin.setRoot(raiz1);
-							
-							Queue<No> fila = null;
-							Bin.busca_largura(raiz1, fila);
-						}
-						else if (insBest == TiposInsercao.VertRoot){
-							
-							System.out.println("AQUI VOU INSERIR VERT ROOT !!!!");
-							raiz1 = Bin.InsertVert_HorizRoot(raiz_bin, no, No_orientacao.vertical, rotacao_item);
-							bin.setRoot(raiz1);
-							
-							Queue<No> fila = null;
-							Bin.busca_largura(raiz1, fila);
-													
-						}
-						else if (insBest == TiposInsercao.AsSubnode){
-							System.out.println("opa to saindo como AsSubnode");
-							System.out.println("AQUI VOU INSERIR ASSUBNODE!!");
-							
-							Bin.InsertAsSubnode(no__subnode, no, rotacao_item);
-							
-						}
-						else if (insBest == TiposInsercao.InParallelTo){
-							
-							System.out.println("AQUI VOU INSERIR INPARELL TO!!!");
-							Bin.InsertInParallelTo2(raiz_insert, no, no_j, no_k, rotacao_item);
-						} else{}
-						
-					}
-					else{
-					
-						System.out.println("\nAqui adiciono o item  a uma nova bin !!!");
-										
-						Bin bins = new Bin();
-						bins.setID(bin_id);
-						
-						no.calcula_retangulo_maximo(no, true);
-						no.calcula_slack(no);
-						no.setMaxima_area_livre(no.maior_area_livre(no));
-						
-						bins.adiciona_item(no);
-						bins.setRoot(no);
-						
-						solucao1.adicionaBin(bins);
-						
-						//Quando criar uma nova bin, incrementa para o próximo id !!!
-						bin_id = bin_id + 1;
-					}
-				
-				}//Iterator de pedidos
-				
-				if((solucao1.size() + solucao2.size()) < solucao.size()){
-					
-					//X <<-- X1 U X2
-					solucao.unir_duas_solucoes(solucao1, solucao2);
-					
-					if(solucao.size() == LB){
-						
-						return solucao;
-					}
-				}
-			}
-			
-			//X2 <<-- X1
-			solucao2.atribui_solucao(solucao1);
-		}
-		
-		return solucao;
-	}
+        for(int exec = 1; exec <= num_execucoes; exec++){   
+
+            System.out.println("Execução de nº "+exec);
+            System.out.println("Agora vou ordenar as bins ...");
+            Funcoes.ordenaPedidosDecrescenteBins(solucao.retornaSolucao());
+            
+            System.out.print("Area livre [");
+            int cont_= 0;
+            while(cont_ < solucao.retornaSolucao().size()){
+                System.out.print(" "+solucao.retornaSolucao().get(cont_).root().getMaxima_area_livre()+",");
+                cont_++;
+            }System.out.println(" ]");
+            
+            SolucaoNAria solucao1 = new SolucaoNAria();//Talvez só precise de uma instância e está é atualizada com vazio !!!
+            bins_sol2 = solucao2.listaBinSolucao();
+
+            while(bins_sol2.hasNext()){ //Verificar a possibiliadade de inserir (numBins > 0) e remover as bins
+
+                bin_S2 = bins_sol2.next();
+
+                //I <- itens da última bin de X2 (Solução 2)
+                lista_itens = bin_S2.getItensBin(solucao2.resgataUltimaBin()); 
+
+                //Remove a última bin de Solução 2
+                System.out.println("Vou remover a última Bin ...");
+                solucao2.removeUltimaBin();
+
+                System.out.println("Vou ordenar a lista de itens da última Bin ...");
+                Funcoes.ordenaPedidosDecrescente(lista_itens);	
+
+                iterator_pedidos = lista_itens.iterator();
+
+                while(iterator_pedidos.hasNext()){
+
+                    pedido = iterator_pedidos.next();
+
+                    no = new No(pedido.getId(),pedido.retornaLargura(),pedido.retornaAltura());
+                    no.setPai(null);
+                    no.calcula_retangulo_minimo(no, false);
+
+                    insBest = TiposInsercao.Vazio;
+
+                    Iterator<Bin> iterator_bin = solucao1.listaBinSolucao();
+
+                    while(iterator_bin.hasNext()){
+
+                        bin = iterator_bin.next();
+                        raiz_bin = bin.root();
+
+                        informacaoInsercao = InsEnum(bin, no, raiz_bin);
+                        insBest = informacaoInsercao.getInsBest();
+                        array_informacao_insercao.add(informacaoInsercao);//Verificar isso aqui e adaptar como no FIRST !!!
+
+                        if(insBest != TiposInsercao.Vazio){
+
+                            break;
+                        }
+                    }
+
+                    //Aqui não precisa pois no algoritmo de Justificação ele executa o First FIT !!!
+                    //informacaoInsercao = InformacaoInsercao.retornaMelhorSolucao(array_informacao_insercao,0);//verificar ta errado
+
+                    insBest  = informacaoInsercao.getInsBest();
+                    bin      = informacaoInsercao.getBin_Insercao();
+                    raiz_bin = informacaoInsercao.getBin_Insercao().root();
+                    no__subnode  = informacaoInsercao.getAsSubnode();
+                    raiz_insert  = informacaoInsercao.getRaiz_Insert();
+                    rotacao_item = informacaoInsercao.getRotacao_Item();
+                    no_j = informacaoInsercao.getNo_j();
+                    no_k = informacaoInsercao.getNo_k();
+
+                    if(insBest != TiposInsercao.Vazio){
+
+                        No raiz1;
+
+                        if (insBest == TiposInsercao.HorizRoot){
+
+                            System.out.println("AQUI VOU INSERIR HORIZ ROOT !!!!");	
+                            raiz1 = Bin.InsertVert_HorizRoot(raiz_bin, no, No_orientacao.horizontal, rotacao_item);
+                            bin.setRoot(raiz1);
+
+                            Queue<No> fila = null;
+                            Bin.busca_largura(raiz1, fila);
+                        }
+                        else if (insBest == TiposInsercao.VertRoot){
+
+                            System.out.println("AQUI VOU INSERIR VERT ROOT !!!!");
+                            raiz1 = Bin.InsertVert_HorizRoot(raiz_bin, no, No_orientacao.vertical, rotacao_item);
+                            bin.setRoot(raiz1);
+
+                            Queue<No> fila = null;
+                            Bin.busca_largura(raiz1, fila);
+
+                        }
+                        else if (insBest == TiposInsercao.AsSubnode){
+                            
+                            System.out.println("opa to saindo como AsSubnode");
+                            System.out.println("AQUI VOU INSERIR ASSUBNODE!!");
+
+                            Bin.InsertAsSubnode(no__subnode, no, rotacao_item);
+
+                        }
+                        else if (insBest == TiposInsercao.InParallelTo){
+
+                            System.out.println("AQUI VOU INSERIR INPARELL TO!!!");
+                            Bin.InsertInParallelTo2(raiz_insert, no, no_j, no_k, rotacao_item);
+                        } else{}
+
+                    }
+                    else{
+
+                        System.out.println("\nAqui adiciono o item  a uma nova bin !!!");
+
+                        Bin bins = new Bin();
+                        bins.setID(bin_id);
+
+                        no.calcula_retangulo_maximo(no, true);
+                        no.calcula_slack(no);
+                        no.setMaxima_area_livre(no.maior_area_livre(no));
+
+                        bins.adiciona_item(no);
+                        bins.setRoot(no);
+
+                        solucao1.adicionaBin(bins);
+
+                        //Quando criar uma nova bin, incrementa para o próximo id !!!
+                        bin_id = bin_id + 1;
+                    }
+
+                }//Iterator de pedidos
+
+                if((solucao1.size() + solucao2.size()) < solucao.size()){
+
+                    //X <<-- X1 U X2
+                    solucao.unir_duas_solucoes(solucao1, solucao2);
+
+                    if(solucao.size() == LB){
+
+                        return solucao;
+                    }
+                }
+                
+                //inserir aqui para pegar novamente o iterator para o número de bins. Assim atualizando a lista de iterator
+                bins_sol2 = solucao2.listaBinSolucao();
+        }
+
+        //X2 <<-- X1
+        solucao2.atribui_solucao(solucao1);
+      }
+
+      System.out.println("Justified - Tamanho da solucao retornada -> "+ solucao.retornaSolucao().size());
+      return solucao;
+   }
+        
+   public SolucaoNAria calculaFAV_FAV2(SolucaoNAria solucao, Chapa chapa){
+    
+        int num_bin,j = 0;
+        int w = (int) chapa.getLargura();
+        int h = (int) chapa.getAltura();
+        
+        Bin bin;
+        float arealivre, somatorio = 0;
+        Double FAV = 0.0, FAV2 = 0.0;
+        Double sobra_bin = 0.0, MenorAp = 0.0;
+        
+        ArrayList<Double> FAVCorrente = new ArrayList<Double>(); //Lista de FAVs
+        ArrayList<Double> listSobras = new ArrayList<Double>(); //Sobras referentes de cada placa !
+        
+        Iterator<Bin> iteratoBIN = solucao.listaBinSolucao();
+        
+        while(iteratoBIN.hasNext()){
+        
+            bin = iteratoBIN.next();
+            arealivre = bin.root().getMaxima_area_livre();
+            
+             bin.setFav(new Double(Utilidades.Funcoes.getChapa().retorneArea() - arealivre));//ou this.getChapa().retorneArea();
+             bin.setSobra(new Double(arealivre));
+            
+            FAV = FAV + bin.getFav();
+            
+            FAVCorrente.add((bin.getFav()/(w*h))*100);
+            
+            sobra_bin = 100 - (bin.getFav()/(w*h)*100);
+            listSobras.add(sobra_bin);
+            
+            //Atualiza as sobras dentro de cada BIN
+            //bin.setAproveitamento(sobra_bin.floatValue());
+            bin.setAproveitamento(Utilidades.Funcoes.getChapa().retorneArea() - arealivre);
+            if (sobra_bin > MenorAp){
+            
+                MenorAp = sobra_bin;                	                	
+            }
+            j++;
+        }
+        
+        solucao.set_Fav(FAV);
+        //Cálculo final das Funções de Avaliação mas para aplicar na SolucaoNAria
+        FAV2 = ((FAV)+MenorAp)/j;
+        FAV = FAV/(j*w*h);
+        
+        solucao.setFAV(FAV);
+        solucao.setFAV2(FAV2);
+    
+    
+        return solucao;
+    }
 	
 	
 } // fim da classe !!!!

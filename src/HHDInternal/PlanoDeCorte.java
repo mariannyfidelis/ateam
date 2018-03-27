@@ -3,10 +3,11 @@ package HHDInternal;
 import HHDInterfaces.IPecaPronta;
 import HHDInterfaces.ISobra;
 import HHDComparadores.*;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class PlanoDeCorte {
+public class PlanoDeCorte implements Serializable{
 
 	private ISobra sobraCortada;
 	private LinkedList listaDeCortes;

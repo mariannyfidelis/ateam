@@ -1,7 +1,9 @@
 package j_HeuristicaArvoreNAria;
 
+import java.io.Serializable;
 
-public class RetanguloMaximo {
+
+public class RetanguloMaximo implements Serializable{
 
 	private float W_P;
 	private float H_P;

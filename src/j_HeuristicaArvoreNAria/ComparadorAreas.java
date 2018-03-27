@@ -1,6 +1,6 @@
 package j_HeuristicaArvoreNAria;
 
-import HeuristicaConstrutivaInicial.IPedido;
+import HHDInterfaces.IPedido;
 import java.util.Comparator;
 
 public class ComparadorAreas implements Comparator<Pedidos>{

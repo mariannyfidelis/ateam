@@ -1,6 +1,6 @@
 package ComunicaoConcorrenteParalela;
 
-import Util.Funcoes;
+import Utilidades.Funcoes;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,23 +42,7 @@ public class SimulaServidor{
         this.name = name;   
         //this.tipo_mem = tipo_memoria.toString();
     }*/
-    
-    public int getPorta(){
-     
-        return this.porta;
-    }
-    
-    public String getHost(){
-      
-        return this.host;
-    }
-    
-    public String getName(){
-      
-        return this.name;
-    }
-           
-    public void SimulaServidor(int porta, String host, String name, TipoMemoria tipo_memoria) throws IOException{
+     public void SimulaServidor(int porta, String host, String name, TipoMemoria tipo_memoria) throws IOException{
     
         if(tipo_memoria.equals(TipoMemoria.A)){
             this.porta = porta;
@@ -82,6 +66,21 @@ public class SimulaServidor{
         }
         
         System.out.println("Criei os agentes adequados ao tipo de memória !!!");
+    }
+     
+    public int getPorta(){
+     
+        return this.porta;
+    }
+    
+    public String getHost(){
+      
+        return this.host;
+    }
+    
+    public String getName(){
+      
+        return this.name;
     }
     
     public void setServicoServidor(IServidorServicos servicoServidor){
@@ -109,7 +108,7 @@ public class SimulaServidor{
             
             serveChannel = ServerSocketChannel.open();
             serveChannel.configureBlocking(false);
-            serveChannel.bind(new InetSocketAddress(porta));
+            //serveChannel.bind(new InetSocketAddress(porta));foi comentado para execucao!!!
             
             Funcoes.cria_PortMap(name, host, porta);
             
@@ -361,6 +360,56 @@ public class SimulaServidor{
         }
                 
         return (ObjetoComunicacao) objeto;
+    } 
+    
+    //Aqui é implementado outro método de SERIALIZAÇÃO E DESSERIALIZAÇÃO com OBJETO COMUNICAÇÃO MELHORADO
+    public ByteBuffer serializaMensagem(ObjetoComunicacaoMelhorado objeto){ //Passa o objeto no caso SOLUÇÃO
+    
+        byte[] bytes_obj = null;
+        ObjectOutput out = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+               
+        try{
+            out = new ObjectOutputStream(baos);
+            out.writeObject(objeto);
+            bytes_obj = baos.toByteArray();
+            
+            out.close();
+            baos.close();
+        }
+        catch(IOException ioe){
+            System.out.println(ioe);
+        }
+        
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes_obj);
+        
+        return  byteBuffer;
+    }
+    
+    public ObjetoComunicacaoMelhorado  deserializaMensagemObM(ByteBuffer byteBuffer){
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer.array());
+        ObjectInput entrada = null;
+        Object objeto = null;
+        
+        try{
+            entrada = new ObjectInputStream(bais);
+            objeto = entrada.readObject();
+            
+            bais.close();
+            entrada.close();
+        }
+        catch (ClassNotFoundException ex) {
+            System.out.println("Nenhuma classe encontrada !!!");
+            System.out.println(ex);
+        }
+        catch(IOException ioe){
+            
+            System.out.println("Não há mensagem de retorno !!!");
+            System.out.println(ioe);
+        }
+                
+        return (ObjetoComunicacaoMelhorado) objeto;
     } 
     
     public Selector criaSelector(String host, int porta_com){

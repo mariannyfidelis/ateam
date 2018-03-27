@@ -1,51 +1,66 @@
 package HHDInternal;
 
-import HHDInterfaces.IDimensao2d;
-import HHDInterfaces.IPedido;
-import HHDInterfaces.IPecaIPedacoWrapper;
-import HHDInterfaces.IPecaPronta;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serializable;
+import HHDInterfaces.IPedido;
+import java.awt.AlphaComposite;
+import HHDInterfaces.IDimensao2d;
+import HHDInterfaces.IPecaPronta;
+import HHDInterfaces.IPecaIPedacoWrapper;
+import HHD_Exception.PecaInvalidaException;
 
-
-public class Peca implements IPecaPronta {
+public class Peca implements IPecaPronta,Serializable {
 
     //Pode tbm referenciar em qual faixa ou nível  a peça está !!!
     private PedacoDisponivel pedacoCortado;
     private IPedido pedidoAtendido;
     private boolean permiteRotacao;
     private boolean selected;
-
     
-    public Peca(PedacoDisponivel pCortado, IPedido pedido, boolean podeRotacionar) throws PecaInvalidaException{
+    public Peca(PedacoDisponivel pCortado, IPedido pedido, boolean podeRotacionar, boolean GRASP) throws PecaInvalidaException{
 	
-        int cabe_return = -1;
-	
-        cabe_return = pCortado.cabePeca(pedido.retorneDimensao(), podeRotacionar);
-        
-        if(cabe_return == 0 || cabe_return == 1){
-		
-                pedacoCortado = pCortado;
-		pedidoAtendido = pedido;
-	}
-        else{
-            System.out.println("Erro peça inválida");
-        	throw new PecaInvalidaException();
+        if(GRASP == false){
+            
+            int cabe_return = -1;
+
+            cabe_return = pCortado.cabePeca(pedido.retorneDimensao(), podeRotacionar);
+
+            if(cabe_return == 0 || cabe_return == 1){
+
+                    pedacoCortado = pCortado;
+                    pedidoAtendido = pedido;
+            }
+            else{
+                System.out.println("Erro peça inválida");
+                    throw new PecaInvalidaException();
+            }
+
+                selected = false;
         }
-	
-            selected = false;
+        //Para algoritmos que executam o GRASP
+        if(GRASP == true){
+        
+            if(pCortado.cabePecaG(podeRotacionar,pedido.retorneDimensao())){
+               pedacoCortado = pCortado;
+               pedidoAtendido = pedido;
+            }
+            else
+               throw new PecaInvalidaException();
+
+               selected = false;
+        }
     }
 
     public IDimensao2d retorneDimensoes(){
-        
+               
         return pedidoAtendido.retorneDimensao();
     }
     
     public IDimensao2d retornDimensoes(){
     
-        return new Dimensao2D(retornaAltura(), retornaBase());
+        return new Dimensao2D(retornaBase(),retornaAltura());
     }
     
     public float retornaBase(){
@@ -148,15 +163,16 @@ public class Peca implements IPecaPronta {
 
     @Override
     public void retireUmaPeca() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        getPedidoAtendido().atendaUmPedido();
     }
 
     @Override
     public int getPecasDisponiveis() {
         
-        getPedidoAtendido().quantidade();
+        return getPedidoAtendido().quantidade();
         //Por enquanto pra testar
-        return 0;
+        //return 0;
     }
 
     @Override
@@ -164,7 +180,8 @@ public class Peca implements IPecaPronta {
         
         if(permiteRotacao() == true){
         
-            return new Dimensao2D(retornaAltura(), retornaBase());
+            //return new Dimensao2D(retornaAltura(), retornaBase());
+            return new Dimensao2D(retornaBase(),retornaAltura());
         
         }
         return pedidoAtendido.retorneDimensao();

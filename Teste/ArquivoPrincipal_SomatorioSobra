@@ -1,0 +1,7 @@
+reset
+set grid
+set title  "Gráfico Função de Avaliação Somatorio Sobras"
+set xlabel "Tempo"
+set ylabel "Inverso da qualidade"
+set xrange [0.00:144.00]
+plot "ArquivoSomatorioSobra"

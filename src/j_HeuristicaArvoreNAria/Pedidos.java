@@ -1,13 +1,14 @@
 package j_HeuristicaArvoreNAria;
 
-import HeuristicaConstrutivaInicial.Dimensao2D;
-import HeuristicaConstrutivaInicial.IDimensao2d;
-import HeuristicaConstrutivaInicial.IPedido;
+import HHDInternal.Dimensao2D;
+import HHDInterfaces.IDimensao2d;
+import HHDInterfaces.IPedido;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 
-public class Pedidos implements IPedido{
+public class Pedidos implements IPedido, Serializable{
 
 	private int id;
 	private float d_altura, d_largura, d_area;
@@ -16,15 +17,16 @@ public class Pedidos implements IPedido{
 	
 	public Pedidos(Pedidos p){
         
-            this.setId(p.getId());
+            id = p.getId();
             d_largura = p.retornaLargura();
             d_altura = p.retornaAltura();
             d_area = p.retornaLargura() * p.retornaAltura();
             quantidade = 1;
         }
-	public Pedidos(int id, float largura,float altura){
+	
+        public Pedidos(int id, float largura,float altura){
 		
-            this.setId(id);
+            this.id = id;
             d_largura = largura;
             d_altura = altura;
             d_area = altura * largura;
@@ -111,7 +113,7 @@ public class Pedidos implements IPedido{
     @Override
     public IDimensao2d retorneDimensao() {
         
-        return new Dimensao2D(retornaAltura(), retornaLargura());
+        return new Dimensao2D(retornaLargura(),retornaAltura());
     }
 
     @Override

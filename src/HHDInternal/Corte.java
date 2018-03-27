@@ -3,44 +3,60 @@ package HHDInternal;
 import HHDInterfaces.IDimensao2d;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.Comparator;
 
 
-public class Corte implements Comparator{
+public class Corte implements Comparator, Serializable{
 
     private int id;
     private float posicaoCorte;
+    private float posicaoCorteGrasp;
     private float tamanho;
     private boolean vertical;
     private Ponto pontoChapaCortada;
-
+    private Ponto pontoChapaCortadaGrasp;
+    
     public Corte(float pos, Ponto pontoChapa, boolean corteVertical, float tamanho, int idCorte) {
 
-            posicaoCorte = pos;
-            pontoChapaCortada = pontoChapa;
-            this.vertical = corteVertical;
-            this.tamanho = tamanho;
-            id = idCorte;
+        posicaoCorte = pos;
+        posicaoCorteGrasp = pos;
+        pontoChapaCortada = pontoChapa;
+        pontoChapaCortadaGrasp = pontoChapa;
+        this.vertical = corteVertical;
+        this.tamanho = tamanho;
+        id = idCorte;
     }
 
     public Corte() {
     }
 
-    public void registraCorte(float pos, Ponto pontoChapa, boolean corteVertical, 
-                                        float tamanho, int idCorte)
-    {
-            posicaoCorte = pos;
-            pontoChapaCortada = pontoChapa;
-            this.vertical = corteVertical;
-            this.tamanho = tamanho;
-            id = idCorte;
+    public void registraCorte(float pos, Ponto pontoChapa, boolean corteVertical, float tamanho, int idCorte){
+            
+        posicaoCorte = pos;
+        posicaoCorteGrasp = pos;
+        pontoChapaCortada = pontoChapa;
+        pontoChapaCortadaGrasp = pontoChapa;
+        this.vertical = corteVertical;
+        this.tamanho = tamanho;
+        id = idCorte;
     }
 
     public float getPosicaoCorte(){
 
-            return posicaoCorte;
+         return posicaoCorte;
     }
+    
+    public float getPosicaoCorteGrasp(){
 
+         return posicaoCorteGrasp;
+    }
+    
+    public void setPosicaoCorteGrasp(float posG){
+    
+        posicaoCorteGrasp = posG;
+    
+    }
     public float getTamanho(){
             return tamanho;
     }
@@ -53,6 +69,10 @@ public class Corte implements Comparator{
     public int getId(){
 
             return id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
     }
 
     @Override
@@ -95,5 +115,15 @@ public class Corte implements Comparator{
     public Ponto getPontoChapaCortada(){
 
             return pontoChapaCortada;
+    }
+    
+    public Ponto getPontoChapaCortadaGrasp(){
+    
+        return pontoChapaCortadaGrasp;
+    }
+    
+    public void setPontoChapaCortadaGrasp(Ponto pontoChapaCortadaGrasp){
+    
+        this.pontoChapaCortadaGrasp = new Ponto(pontoChapaCortadaGrasp);
     }
 }

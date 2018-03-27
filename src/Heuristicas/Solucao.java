@@ -1,9 +1,9 @@
 package Heuristicas;
 
-import Util.Chapa;
+import Utilidades.Chapa;
 import java.util.Iterator;
 import java.util.LinkedList;
-import Util.Funcoes;
+import Utilidades.Funcoes;
 import java.io.Serializable;
 
 public class Solucao implements Serializable{

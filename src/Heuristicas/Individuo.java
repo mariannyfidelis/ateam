@@ -3,8 +3,8 @@ package Heuristicas;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import Util.Chapa;
-import Util.Funcoes;
+import Utilidades.Chapa;
+import Utilidades.Funcoes;
 import java.io.Serializable;
 
 public class Individuo implements Serializable{
@@ -26,7 +26,10 @@ public class Individuo implements Serializable{
         public Individuo(){
 		
 		capac_respeitada = true;
-		fitness = Funcoes.getChapa().getArea();
+                try{
+		    fitness = Funcoes.getChapa().getArea();
+                }catch(Exception e){}
+                
 		somatorio_itens = 0.0;
 		lista_itens = new ArrayList<Integer>();
 	}
@@ -60,7 +63,7 @@ public class Individuo implements Serializable{
 	public void setListaItens(List<Integer> list){
 		
                 lista_itens.addAll(list);
-		//lista_itens = list;		
+			
 	}
 	
 	public void setListaItens2(List<Integer> list){
@@ -94,6 +97,11 @@ public class Individuo implements Serializable{
 		return fitness;
 	}
 
+        public void setFitness(double fitness) {
+		
+		this.fitness = fitness;
+	}
+        
 	public void setFitness() {
 		
 		this.fitness = Util.calcula_fitness_placa(getSomatorioItens(), Chapa.getArea());
@@ -147,7 +155,7 @@ public class Individuo implements Serializable{
             while(iterator.hasNext()){
 
                     aux = iterator.next();
-                    somatorio = somatorio + Funcoes.getVetor_info()[aux].retornaArea();
+                    somatorio = somatorio + Funcoes.getVetor_info()[aux-1].retornaArea();
             }
           return somatorio;
 	}

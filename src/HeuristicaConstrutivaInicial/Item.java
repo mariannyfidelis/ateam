@@ -1,16 +1,21 @@
 package HeuristicaConstrutivaInicial;
 
+import HHDInternal.Dimensao2D;
+import HHDInterfaces.IDimensao2d;
+import HHDInterfaces.IPedido;
+import java.io.Serializable;
 
-public class Item  implements IPedido{
+
+public class Item  implements IPedido, Serializable{
     
     private int Id;
-    private int W;
-    private int H;
+    private float W;
+    private float H;
     private int D;
-    private int V;
+    private float V;
     private int O;
 
-    public Item(int id, int w, int h, int d){
+    public Item(int id, float w, float h, int d){
         
         Id = id;
         W = w;
@@ -21,7 +26,6 @@ public class Item  implements IPedido{
     }
 
     public Item() {
-
     }
 
     public int getId() {
@@ -34,22 +38,22 @@ public class Item  implements IPedido{
         this.Id = Id;
     }
 
-    public int getH() {
+    public float getH() {
         
         return H;
     }
 
-    public void setH(int H) {
+    public void setH(float H) {
         
         this.H = H;
     }
 
-    public int getW() {
+    public float getW() {
         
         return W;
     }
 
-    public void setW(int W) {
+    public void setW(float W) {
         
         this.W = W;
     }
@@ -64,12 +68,12 @@ public class Item  implements IPedido{
         this.D = D;
     }
 
-    public int getV() {
+    public float getV() {
         
         return V;
     }
 
-    public void setV(int V) {
+    public void setV(float V) {
         
         this.V = V;
     }
@@ -87,7 +91,7 @@ public class Item  implements IPedido{
     @Override
     public IDimensao2d retorneDimensao() {
         
-        return new Dimensao2D(getH(), getW());
+        return new Dimensao2D(getW(),getH());
     }
 
     @Override
@@ -106,18 +110,16 @@ public class Item  implements IPedido{
 
     @Override
     public int quantidade() {
-        
         return getD();
     }
 
     @Override
     public void atendaUmPedido() {
-        this.D = this.D -1;
+        this.D = this.D - 1;
     }
 
     @Override
     public void devolvaPedido() {
-        
         this.D = this.D + 1;
     }
 

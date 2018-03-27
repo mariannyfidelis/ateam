@@ -21,7 +21,8 @@ import HHDInterfaces.IGenericSolution;
 import HHDInterfaces.ISolutionProvider;
 import HHDInterfaces.ISolutionInterface;
 import HHDInterfaces.IPecaIPedacoWrapper;
-import HHDException.InvalidVisualizationIdentifierException;
+import HHD_Exception.InvalidVisualizationIdentifierException;
+import HeuristicaConstrutivaInicial.Bin;
 
 public class Solucao implements ISolutionInterface{
 
@@ -32,7 +33,6 @@ public class Solucao implements ISolutionInterface{
 
     //primeira implementacao OK
     //sem testes
-    @SuppressWarnings("UseOfObsoleteCollectionType")
     public Solucao(IGenericSolution givenSolution){
 
         solucaoGenerica = givenSolution;
@@ -471,7 +471,9 @@ public class Solucao implements ISolutionInterface{
      */
     public float getDesperdicio(int indice){
 
-        return solucaoGenerica.retornePlanoDeCorte(indice).getWaste();
+        Bin bin = (Bin) solucaoGenerica.retornePlanoDeCorte(indice);
+        
+        return bin.getWaste();
     }
 
     /* (non-Javadoc)

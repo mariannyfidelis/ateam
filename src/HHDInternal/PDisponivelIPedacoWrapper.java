@@ -2,9 +2,10 @@ package HHDInternal;
 
 import HHDInterfaces.IDimensao2d;
 import HHDInterfaces.IPedaco;
+import java.io.Serializable;
 
 
-public class PDisponivelIPedacoWrapper implements IPedaco{
+public class PDisponivelIPedacoWrapper implements IPedaco, Serializable{
     
     private PedacoDisponivel pedacoEmpacotado;
     private int indiceBinPedaco;

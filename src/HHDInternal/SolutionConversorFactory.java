@@ -1,6 +1,6 @@
 package HHDInternal;
 
-import HHDBinPackTree.BinPackTreeConversor;
+import HHDBinPackingTree.BinPackTreeConversor;
 import HHDInterfaces.ISolutionConversor;
 
 
@@ -35,6 +35,6 @@ public class SolutionConversorFactory{
 	//Conversor "default"
 	public ISolutionConversor newConversor(){
 	
-            return (ISolutionConversor) new BinPackTreeConversor();
+            return new BinPackTreeConversor();
 	}
 }

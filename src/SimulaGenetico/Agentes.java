@@ -1,31 +1,31 @@
 package SimulaGenetico;
 
-import ComunicaoConcorrenteParalela.ObjetoComunicacao;
-import ComunicaoConcorrenteParalela.ServicoAgente;
-import Heuristicas.Individuo;
-import Heuristicas.Solucao;
-import algoritmosAgCombinacao.Filhos;
-import algoritmosAgCombinacao.OperacoesSolucoes_Individuos;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+import Heuristicas.Individuo;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import ComunicaoConcorrenteParalela.ServicoAgente;
+import ComunicaoConcorrenteParalela.ObjetoComunicacao;
+import ComunicaoConcorrenteParalela.ETiposServicosServidor;
+import ComunicaoConcorrenteParalela.ObjetoComunicacaoMelhorado;
 
 public class Agentes implements AgentesServicos{
 
-    String name;
-    int porta_comunicacao;
-    ServicoAgente tipo_agente;
-    ETiposServicosAgentes operacao_agente;
-        
-    HeuristicaConstrutivaInicial.Solucao solucao = new HeuristicaConstrutivaInicial.Solucao();
+    String name_;
+    int porta_comunicacao_;
+    ServicoAgente tipo_agente_;
+    ETiposServicosAgentes operacao_agente_; //Tipo de operação realizada pelo agente
+    ETiposServicosServidor operacao_servidor_; //Tipo de operação requerida da memória pelo agente     
+    //HeuristicaConstrutivaInicial.Solucao solucao = new HeuristicaConstrutivaInicial.Solucao();
+    //SolucaoHeuristica solucao = new SolucaoHeuristica(); 
     Individuo individuo1, individuo2;
 	
     SocketChannel socketChannel = null;
@@ -44,7 +44,7 @@ public class Agentes implements AgentesServicos{
     @Override
     public SocketChannel criaConexaoServidor2(int porta_comunicacao) {
         
-        System.out.println("Sou o agente >> "+ this.name);
+        System.out.println("Sou o agente >> "+ this.name_);
         System.out.println("Criei um agente e vou conectá-lo ao servidor ...");
         System.out.println("A porta eh: "+porta_comunicacao);
         ObjetoComunicacao objeto_cliente = new ObjetoComunicacao();
@@ -100,7 +100,7 @@ public class Agentes implements AgentesServicos{
          //SocketChannel schannel = (SocketChannel) selectKey.channel();
         
         //Dado ou criar um ByteBuffer "allocateDirect()";
-        ByteBuffer byteBuffer = ByteBuffer.allocate(porta_comunicacao);//Definir o nº de itens*4 !!!
+        ByteBuffer byteBuffer = ByteBuffer.allocate(porta_comunicacao_);//Definir o nº de itens*4 !!!
         try {
             //Limpar o buffer e ler bytes do socket
             byteBuffer.clear();
@@ -144,6 +144,29 @@ public class Agentes implements AgentesServicos{
         
         return  byteBuffer;
     }
+      
+    public static ByteBuffer serializaMensagemMelhorado(ObjetoComunicacaoMelhorado objeto) {
+        byte[] bytes_obj = new byte[objeto.getSolucao().getLinkedListIndividuos().size() * 30];
+        ObjectOutput out = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+               
+        try{
+            out = new ObjectOutputStream(baos);
+            out.writeObject(objeto);
+            bytes_obj = baos.toByteArray();
+            
+            out.close();
+            baos.close();
+        }
+        catch(IOException ioe){
+            System.out.println(ioe);
+        }
+        
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes_obj);
+        
+        return  byteBuffer;
+    }
+        
     @Override
     public ObjetoComunicacao deserializaMensagem(ByteBuffer byteBuffer) {
         
@@ -167,47 +190,79 @@ public class Agentes implements AgentesServicos{
                 
         return (ObjetoComunicacao) objeto;
     }
-
-  
+    
+    public static ObjetoComunicacaoMelhorado deserializaMensagemMelhorado(ByteBuffer byteBuffer) {
+        
+        ByteArrayInputStream bais = new ByteArrayInputStream(byteBuffer.array());
+        ObjectInput entrada = null;
+        Object objeto = null;
+        
+        try{
+            entrada = new ObjectInputStream(bais);
+            objeto = entrada.readObject();
+            
+            bais.close();
+            entrada.close();
+        }
+        catch (ClassNotFoundException ex) {
+            System.out.println(ex);
+        }
+        catch(IOException ioe){
+            System.out.println(ioe);
+        }
+                
+        return (ObjetoComunicacaoMelhorado) objeto;
+    }
+    
     public String getName(){
     
-        return name;
+        return name_;
     }
+    
     public void setName(String name){
     
-        this.name = name;    
+        this.name_ = name;    
     }
     
     public int getPortaComunicacao(){
     
-        return porta_comunicacao;
+        return porta_comunicacao_;
     }
     
     public void setPortaComunicacao(int porta){
     
-        this.porta_comunicacao = porta;   
+        this.porta_comunicacao_ = porta;   
     }
     
     public ServicoAgente getServicoAgente(){
     
-        return tipo_agente;
+        return tipo_agente_;
     }
     
     public void setServicoAgente(ServicoAgente servico){
     
-        this.tipo_agente = servico;
+        this.tipo_agente_ = servico;
     }
     
     public ETiposServicosAgentes getTipoServico(){
     
-        return operacao_agente;
+        return operacao_agente_;
     }
     
     public void setTipoServico(ETiposServicosAgentes etipoServico){
     
-        this.operacao_agente = etipoServico;
+        this.operacao_agente_ = etipoServico;
     }
     
+    public ETiposServicosServidor getTipoServicoServidor(){
+    
+        return operacao_servidor_;
+    }
+    
+    public void setTipoServicoServidor(ETiposServicosServidor etipoServicoServidor){
+    
+        this.operacao_servidor_ = etipoServicoServidor;
+    }
     //Acho que aqui seria interessante o processamento de selection Keys;
     
 }

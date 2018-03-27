@@ -7,45 +7,47 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serializable;
 
 
-public class PedacoDisponivel implements ISobra{
+public class PedacoDisponivel implements ISobra, Serializable{
 
     private Ponto pontoInferiorEsquerdo;
     private Ponto pontoSuperiorDireito;
     private int id;
 	
-	public PedacoDisponivel(Ponto pIE, Ponto pSD, int id){
-	
-		pontoInferiorEsquerdo = pIE;
-		pontoSuperiorDireito = pSD;
-		this.id = id;
-	}
-			
-	public PedacoDisponivel(Ponto ponto, IDimensao2d tamanhoChapa, int id){
+    public PedacoDisponivel(Ponto pIE, Ponto pSD, int id){
 
-		pontoInferiorEsquerdo = ponto;
-		pontoSuperiorDireito = new Ponto(ponto.getX() + tamanhoChapa.retorneBase(),
-				                         ponto.getY() + tamanhoChapa.retorneAltura());
-		this.id = id;
-	}
+        pontoInferiorEsquerdo = pIE;
+        pontoSuperiorDireito = pSD;
+        this.id = id;
+    }
+			
+    public PedacoDisponivel(Ponto ponto, IDimensao2d tamanhoChapa, int id){
+
+        pontoInferiorEsquerdo = ponto;
+        pontoSuperiorDireito = new Ponto(ponto.getX() + tamanhoChapa.retorneBase(),
+                                                        ponto.getY() + tamanhoChapa.retorneAltura());
+        this.id = id;
+    }
 
     @Override
     public Ponto getPontoInferiorEsquerdo() {
 
-            return pontoInferiorEsquerdo;
+        return pontoInferiorEsquerdo;
     }
+    
     public Ponto setPontoInferiorEsquerdo(Ponto piFE) {
 
-            this.pontoInferiorEsquerdo = piFE;
-            
-            return this.pontoInferiorEsquerdo;
+        this.pontoInferiorEsquerdo = piFE;
+        
+        return this.pontoInferiorEsquerdo;
     }
 	
     @Override
     public Ponto getPontoSuperiorDireito() {
 
-            return pontoSuperiorDireito;
+        return pontoSuperiorDireito;
     }
 
     public int cabePeca(IPedido maior, boolean permiteRotacao){
@@ -84,8 +86,27 @@ public class PedacoDisponivel implements ISobra{
         //return cabeSemRotacao || (permiteRotacao && cabeComRotacao);
     }
 
-    public boolean podeAtenderPedido(IPedido pedido, boolean permiteRotacao)
-    {
+    //Aqui será implementado o cabe Peça retornando o booleano original
+    public boolean cabePecaG(IPedido maior, boolean permiteRotacao){
+
+        return cabePeca( permiteRotacao, maior.retorneDimensao());
+    }
+	
+    public boolean cabePecaG(boolean permiteRotacao,IDimensao2d maior ){
+
+        System.out.println("\n\nPedido --> (Largura x Altura) -> ("+maior.retorneBase()+" , "+maior.retorneAltura()+")");
+
+        System.out.println("\nPeça Criada --> (Largura x Altura) -> ("+retorneBase()+" , "+retorneAltura()+")");
+
+        boolean cabeSemRotacao = (maior.retorneAltura() <= retorneAltura()) && (maior.retorneBase() <=  retorneBase());
+
+        boolean cabeComRotacao = (maior.retorneAltura() <= retorneBase()) &&   (maior.retorneBase() <= retorneAltura());
+
+        return cabeSemRotacao || (permiteRotacao && cabeComRotacao);
+    }
+    
+    public boolean podeAtenderPedido(IPedido pedido, boolean permiteRotacao){
+        
             boolean atendeSemRotacao = 
                         (pedido.retorneDimensao().retorneAltura() == 
             retorneAltura()) &&
@@ -113,12 +134,22 @@ public class PedacoDisponivel implements ISobra{
         return pontoSuperiorDireito.getX() - pontoInferiorEsquerdo.getX();
     }
 
+    public IDimensao2d retorneDimensao(){
+    
+        return new Dimensao2D(retorneBase(), retorneAltura());
+    }
+    
     @Override
     public int getId(){
         
         return id;
     }
 
+    public void setId(int id) {
+        
+        this.id = id;
+    }
+    
     public PedacoDisponivel corte(Corte corte){
             
         Ponto pIE, pSD;
@@ -129,14 +160,12 @@ public class PedacoDisponivel implements ISobra{
 
         if(corte.eVertical()){
 
-            //Corte realizado é vertical
             x = pontoInferiorEsquerdo.getX() + corte.getPosicaoCorte();
             y = pontoInferiorEsquerdo.getY();
             pontoSuperiorDireito = new Ponto(x, pSD.getY());
         }
         else{
             
-            //Corte realizado é horizontal
             x = pontoInferiorEsquerdo.getX();
             y = pontoInferiorEsquerdo.getY() + corte.getPosicaoCorte();
             pontoSuperiorDireito = new Ponto(pSD.getX(), y);
@@ -174,7 +203,12 @@ public class PedacoDisponivel implements ISobra{
     @Override
     public int retorneIndiceBin(){
 
-            return 0;
+       return 0;
+    }
+
+    @Override
+    public boolean cabePeca(boolean permiteRotacao, IDimensao2d maior) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

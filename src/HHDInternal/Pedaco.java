@@ -2,9 +2,10 @@ package HHDInternal;
 
 import HHDInterfaces.IDimensao2d;
 import HHDInterfaces.IPedido;
+import java.io.Serializable;
 
 
-public class Pedaco{
+public class Pedaco implements Serializable{
 
 	private Position pontoInferiorEsquerdo;
 	private IDimensao2d tamanhoPedaco;

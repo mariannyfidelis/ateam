@@ -1,12 +1,11 @@
 package SimulaGenetico;
 
-import Util.Funcoes;
+import Utilidades.Funcoes;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
-import algoritmosAgCombinacao.Filhos;
 import Heuristicas.Individuo;
-import Util.ComparadorIndividuos;
+import Utilidades.ComparadorIndividuos;
 
 public class AgentesOperadores {
 
@@ -413,5 +412,6 @@ public class AgentesOperadores {
         // Deve-se verificar a restricao de capacidade dos Individuos  !!!!!!!!!!!
 
         // Deve-se verificar a restricao de Restricao de Insercao na Memória !!!!!!!!!!!!!!!!				
-    }		
+    }
+    
 }

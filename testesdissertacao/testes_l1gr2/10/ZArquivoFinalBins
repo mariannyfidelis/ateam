@@ -1,0 +1,9 @@
+set grid
+set title  "Gráfico Número de Bins da M2"
+set xlabel "Solucao"
+set ylabel "Bins"
+set xrange [0.00:100]
+set yrange [0.00:10.00]
+plot "ArquivoNumBins" with linespoints
+replot "ArquivoNumBins_M2" with linespoints
+replot "ArquivoMediaSobra" 

@@ -1,5 +1,10 @@
 package HeuristicaConstrutivaInicial;
 
+import HHDInterfaces.IDimensao2d;
+import HHDInterfaces.IPedaco;
+import HHDInternal.Peca;
+import HHDInternal.Ponto;
+
 
 public class PecaIPedacoWrapper implements IPedaco{
 
@@ -10,7 +15,6 @@ public class PecaIPedacoWrapper implements IPedaco{
 
         peca = pecaAdaptada;
         this.indiceBin = indiceBin;
-
     }
 
     @Override
@@ -21,7 +25,7 @@ public class PecaIPedacoWrapper implements IPedaco{
 
     @Override
     public IDimensao2d getDimensao() {
-        return peca.retorneDimensoes();
+        return peca.retornDimensoes();
     }
 
     @Override
@@ -60,8 +64,7 @@ public class PecaIPedacoWrapper implements IPedaco{
 
     @Override
     public boolean estaRemovido() {
-
-            return false;
+        return false;
     }
 
     @Override

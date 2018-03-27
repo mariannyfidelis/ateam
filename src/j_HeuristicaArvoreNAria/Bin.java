@@ -1,122 +1,171 @@
 package j_HeuristicaArvoreNAria;
 
+import Heuristicas.Individuo;
+import Utilidades.Chapa;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Queue;
 
-public class Bin{
+public class Bin implements Serializable{
 
 	public int id;
-	public No raiz;
-			
+        public No raiz;
+        private Double Fav;
+        private Double Sobra;
+	private float aproveitamento;
+        //private static Individuo sequenciaInd;
+        
 	public Bin(){
 		
-		raiz = null;	
+            raiz = null;
+            Fav = 0.0;
+            //sequenciaInd = new Individuo();
+            //Sobra = 0.0;
 	}
 	
 	public int getID(){
 		
-		return id;
+            return id;
 	}
 	
 	public void setID(int idi){
 		
-		id = idi;
+            id = idi;
 	}
-	
+        
+        public Double getFav() {
+    
+            return Fav;
+        }
+        
+        public void setFav(Double Fav) {
+        
+            this.Fav = Fav;
+        }
+
+        public Double getSobra() {
+       
+            return Sobra;
+        }
+
+        public void setSobra(Double Sobra) {
+        
+            this.Sobra = Sobra;
+        }
+        
+        public float getAproveitamento(){
+        
+            return this.aproveitamento;
+        }
+        
+        public void setAproveitamento(float aproveitamento){
+        
+            this.aproveitamento = aproveitamento;
+        }
+        
+//        public static Individuo getSequenciaInd(){
+//        
+//            return sequenciaInd;
+//        }
+//        
+//	public void setSequenciaInd(Individuo ind){
+//            
+//            sequenciaInd = ind;
+//        }
+        
 	public void adiciona_item(No item){
 		
-		raiz = item;	
+            raiz = item;	
 	}
 	
 	public No root(){
 		
-		return raiz;
+            return raiz;
 	}
 		
 	public void setRoot(No elemento){
 			
-		raiz = elemento;		
+            raiz = elemento;		
 	}
 		
 	public Iterator<No> elements(No root){
 		
-		Iterator<No> iterator = root.children();
-					
-		return iterator;
+            Iterator<No> iterator = root.children();
+
+            return iterator;
 	}
 
 	public static ArrayList<No> positions(No root){
 	
-		ArrayList<No> array = new ArrayList<No>();
-		Iterator<No> iterator = root.children();
-				
-		while(iterator.hasNext()){
-			
-			array.add(iterator.next());
-		}
-		
-		return array;
+            ArrayList<No> array = new ArrayList<No>();
+            Iterator<No> iterator = root.children();
+
+            while(iterator.hasNext()){
+
+                    array.add(iterator.next());
+            }
+
+            return array;
 	}
 
 	public int size(){
 
-		ArrayList<No> a = positions(raiz);
+            ArrayList<No> a = positions(raiz);
 
-		return a.size();
+            return a.size();
 	}
 	
 	public boolean estaVazia(){
 		
-		if(raiz == null){
-			
-			return true;	
-		}
-		
-		return false;
+            if(raiz == null){
+
+                    return true;	
+            }
+
+            return false;
 	}
 	
 	public static LinkedList<Pedidos> busca_largura(No root, Queue<No> fila){ 
 		
-		fila = new LinkedList<No>();
-		LinkedList<No> caminho = new LinkedList<No>();
-		
-		LinkedList<Pedidos> lista_pedidos = new LinkedList<Pedidos>();
-		
-		Iterator<No> iterator; 
-		No no;
-		
-		fila.add(root);
-		
-		while(!fila.isEmpty()){
-			
-			no = fila.poll(); 
-			
-			if(no.getItem() != null){
-				int cont = 1;
-				
-				 lista_pedidos.add(new Pedidos(cont, no.getItem().getLargura(), no.getItem().getAltura())); 
-				 caminho.add(no); //por enquanto fica aqui (Será necessário ????)
-				
-				cont++;
-			}
-			
-			no.calcula_retangulo_maximo(no, false);
-			no.calcula_slack(no);
-			no.setMaxima_area_livre(no.maior_area_livre(no));
-			
-			
-			iterator = no.children();
-			
-			while(iterator.hasNext()){
-				
-				no = iterator.next();
-				fila.add(no);
-			}
-		}
-		
-		return lista_pedidos;
+            fila = new LinkedList<No>();
+            LinkedList<No> caminho = new LinkedList<No>();
+
+            LinkedList<Pedidos> lista_pedidos = new LinkedList<Pedidos>();
+
+            Iterator<No> iterator; 
+            No no;
+
+            fila.add(root);
+
+            while(!fila.isEmpty()){
+
+                    no = fila.poll(); 
+
+                    if(no.getItem() != null){
+                            int cont = 1;
+
+                             lista_pedidos.add(new Pedidos(cont, no.getItem().getLargura(), no.getItem().getAltura())); 
+                             caminho.add(no); //por enquanto fica aqui (Será necessário ????)
+
+                            cont++;
+                    }
+
+                    no.calcula_retangulo_maximo(no, false);
+                    no.calcula_slack(no);
+                    no.setMaxima_area_livre(no.maior_area_livre(no));
+
+                    iterator = no.children();
+
+                    while(iterator.hasNext()){
+
+                            no = iterator.next();
+                            fila.add(no);
+                    }
+            }
+
+            return lista_pedidos;
 	}
 
 	public LinkedList<Pedidos> getItensBin(Bin bin){
@@ -130,87 +179,97 @@ public class Bin{
 	}
 	public ArrayList<No> busca_profundidade(No inicial, ArrayList<No> caminho){ 
 		
-		Iterator<No> iterator = inicial.children(); 
-		No vert;
-		
-		caminho.add(inicial);
-		
-		while (iterator.hasNext()) {
-			vert = (No) iterator.next();
-			busca_profundidade(vert, caminho);
-		}
-		
-		return caminho;
+            Iterator<No> iterator = inicial.children(); 
+            No vert;
+
+            caminho.add(inicial);
+
+            while (iterator.hasNext()) {
+                    vert = (No) iterator.next();
+                    busca_profundidade(vert, caminho);
+            }
+
+            return caminho;
 	}
 	
-	public boolean padrao_viavel(No root){
+    public boolean padrao_viavel(No root){
+
+        if((root.getRetanguloMinimo().getW_p()) <= ((float) Chapa.getLargura())){
+                System.out.println("Padrão Válido !!!");
+
+                return true;
+        }
+        else{
+                return false;
+        }
+    }
+
+    public static void InsertAsSubnode(No pai, No filho, boolean rotacao_item){
+	
+//        idB = filho.getItem().getId();
+//        areaIdB = filho.getItem().getArea();
+//        sequenciaInd.adicionaItemLista(idB, areaIdB);
+        
+            No no, root = null;
+            boolean rotaciona = false;
 		
-		if((root.getRetanguloMinimo().getW_p()) <= (Chapa.getLargura())){
-			System.out.println("Padrão Válido !!!");
-			
-			return true;
-		}
-		else{
-			return false;
-		}
+            filho.getItem().setRotacao(rotacao_item);
+            filho.calcula_area_padrao(filho);
+
+            if(pai.getItem() == null){
+
+                pai.getFilhos().add(filho);
+                filho.setPai(pai);
+
+                root = pai;
+            }
+
+            //no = filho.getPai();
+            no = filho;
+
+            while(no != null){
+
+                    if(no.getItem() == null){
+
+                            rotaciona = false;
+
+                    }else{
+                            rotaciona = no.getItem().getRotacao();
+                     }
+
+                    no.calcula_retangulo_minimo(no, rotaciona);
+                    no.calcula_area_padrao(no);
+
+                    if(rotaciona == false){
+
+                        if(no.getTipo_corte().corte == No_orientacao.horizontal){
+
+                            Funcoes.ordenaPedidosDecrescenteRetMinimo(false, no.getFilhos());
+                        }
+                        else{
+                            Funcoes.ordenaPedidosDecrescenteRetMinimo(true, no.getFilhos());
+                        }
+
+                    }
+
+                    if(no != null){
+                            root = no;
+                    }
+
+                    no = no.getPai();
+            }
+
+            Queue<No> fila = null;
+            busca_largura(root, fila); 
 	}
 
-	public static void InsertAsSubnode(No pai, No filho, boolean rotacao_item){
-		
-		No no, root = null;
-		boolean rotaciona = false;
-		
-		filho.getItem().setRotacao(rotacao_item);
-		filho.calcula_area_padrao(filho);
-		
-		if(pai.getItem() == null){
-			pai.getFilhos().add(filho);
-			filho.setPai(pai);
-			
-			root = pai;
-		}
-		
-		//no = filho.getPai();
-		no = filho;
-		
-		while(no != null){
-			
-			if(no.getItem() == null){
-
-				rotaciona = false;
-
-			}else{
-				rotaciona = no.getItem().getRotacao();
-			 }
-			
-			no.calcula_retangulo_minimo(no, rotaciona);
-			no.calcula_area_padrao(no);
-			
-			if(rotaciona == false){
-				
-				if(no.getTipo_corte().corte == No_orientacao.horizontal){
-					
-					Funcoes.ordenaPedidosDecrescenteRetMinimo(false, no.getFilhos());
-				}
-				else{
-					Funcoes.ordenaPedidosDecrescenteRetMinimo(true, no.getFilhos());
-				}
-				
-			}
- 
-			if(no != null){
-				root = no;
-			}
-			
-			no = no.getPai();
-		}
-		
-		Queue<No> fila = null;
-		busca_largura(root, fila); 
-	}
-
+//        static int idB;
+//        static float areaIdB;
 	public static No InsertVert_HorizRoot(No raiz, No filho, No_orientacao corte, boolean rotacao_item){
 		
+//                idB = filho.getItem().getId();
+//                areaIdB = filho.getItem().getArea();
+//                sequenciaInd.adicionaItemLista(idB,areaIdB);
 		No novo;
 		boolean node_v;
 		
@@ -219,16 +278,16 @@ public class Bin{
 		
 		if(corte == No_orientacao.vertical){
 			
-			System.out.println("Meu tipo de corte é Vertical");
-			novo = new No(true);
-			novo.setPai(null);
-			
-			System.out.println("Novo nó criado");
-			
-			novo.getFilhos().add(filho);
-			
-			node_v = true;
-		}
+                    System.out.println("Meu tipo de corte é Vertical");
+                    novo = new No(true);
+                    novo.setPai(null);
+                    
+                    System.out.println("Novo nó criado");
+                    
+                    novo.getFilhos().add(filho);			
+		
+                    node_v = true;
+                }
 		else{
 			
 			System.out.println("Meu tipo de corte é Horizontal");
@@ -258,15 +317,19 @@ public class Bin{
 		novo.calcula_area_padrao(novo);
 		
 		Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v, novo.getFilhos());
-				  
-   	    raiz = novo;
-				
-		return raiz;
+		
+                raiz = novo;
+		
+                return raiz;
 	}
 	
 	public static void InsertInParallelTo(No no_item, No no_k){
-		
-		No novo, aux_pai = null, no_aux = null;
+//		
+//            idB = no_item.getItem().getId();
+//            areaIdB = no_item.getItem().getArea();
+//	    sequenciaInd.adicionaItemLista(idB, areaIdB);
+            
+            No novo, aux_pai = null, no_aux = null;
 		
 		no_aux = no_k;
 		aux_pai = no_aux.getPai();
@@ -444,7 +507,11 @@ public class Bin{
 		int var = no_k2 - (no_j - 1);
 		boolean rotaciona, node_v;
 		
-		No novo;
+//                idB = no_item.getItem().getId();
+//                areaIdB = no_item.getItem().getArea();
+//                sequenciaInd.adicionaItemLista(idB, areaIdB);
+		
+                No novo;
 		
 		no_item.getItem().setRotacao(rotacao_item);
 		no_item.calcula_retangulo_minimo(no_item, no_item.getItem().getRotacao());
@@ -471,137 +538,137 @@ public class Bin{
 			
 		if(var == 1){
 			
-	        No aux = array.get(no_j);
+                    No aux = array.get(no_j);
 	                     
-	        novo.getFilhos().add(aux);
-			aux.setPai(novo);
-			     
-			novo.calcula_retangulo_minimo(novo, false);
-	        novo.calcula_area_padrao(novo);
+                    novo.getFilhos().add(aux);
+                    aux.setPai(novo);
+		
+                    novo.calcula_retangulo_minimo(novo, false);
+                    novo.calcula_area_padrao(novo);
 	        
-	        Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v, novo.getFilhos());
+                    Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v, novo.getFilhos());
 	        
-	        novo.setPai(raiz_insert);
-			raiz_insert.getFilhos().remove(aux);
-			raiz_insert.getFilhos().add(novo);
-
-	        No pai = novo.getPai();
-			No root = pai;
+                    novo.setPai(raiz_insert);
+                    raiz_insert.getFilhos().remove(aux);
+                    raiz_insert.getFilhos().add(novo);
+	        
+                    No pai = novo.getPai();
+                    No root = pai;
+		
+                    while(pai != null){
+		
+                        if(pai.getItem() == null){
+                            rotaciona = false;
+                        }
+                        else{
+                            rotaciona = pai.getItem().getRotacao();
+                        }
+		        
+                        pai.calcula_retangulo_minimo(pai, rotaciona);
+                        pai.calcula_area_padrao(pai);
 			
-	        while(pai != null){
+                        if(rotaciona == false){
+		    	
+                            if(pai.getTipo_corte().corte == No_orientacao.horizontal){
 			
-			   if(pai.getItem() == null){
-				rotaciona = false;
-			   }
-			   else{
-				rotaciona = pai.getItem().getRotacao();
-			   }
-		          
-		       pai.calcula_retangulo_minimo(pai, rotaciona);
-		       pai.calcula_area_padrao(pai);
-				
-		       if(rotaciona == false){
-		    	   
-		    	   if(pai.getTipo_corte().corte == No_orientacao.horizontal){
-						
-						Funcoes.ordenaPedidosDecrescenteRetMinimo(false, pai.getFilhos());
-				   }
-				   else{
-						Funcoes.ordenaPedidosDecrescenteRetMinimo(true, pai.getFilhos());
-				   }		    	   		    	   
-		       }
+                                Funcoes.ordenaPedidosDecrescenteRetMinimo(false, pai.getFilhos());
+                            }
+                            else{
+                                Funcoes.ordenaPedidosDecrescenteRetMinimo(true, pai.getFilhos());
+                            }		    	   		    	   
+                        }
 		       
-		       if(pai != null){
-			      root = pai;
-			   }
-				
-			   pai = pai.getPai();
-			}
+                        if(pai != null){
+                            root = pai;
+                        }
 			
-			Queue<No> fila = null;
-			busca_largura(root, fila);
-		}
-			
-		else if(var > 1){
+                        pai = pai.getPai();
+                    }
+                    
+                    Queue<No> fila = null;
+                    busca_largura(root, fila);
+                }
+		
+                else if(var > 1){
 
-			   No novo2, aux_filho;
-			   boolean node_v2;
+                    No novo2, aux_filho;
+                    boolean node_v2;
+		
+                    if(raiz_insert.getTipo_corte().corte == No_orientacao.horizontal){
+		
+                        novo2 = new No(false);
+                        node_v2 = false;
+                    }
+                    else{
+		
+                        novo2 = new No(true);
+                        node_v2 = true;
+                    }
+		
+                    while(no_j  <= no_k2){
+			   
+                        aux_filho = array.get(no_j);
+                        novo2.getFilhos().add(aux_filho);
+                        aux_filho.setPai(novo2);
 			
-			   if(raiz_insert.getTipo_corte().corte == No_orientacao.horizontal){
+                        raiz_insert.getFilhos().remove(aux_filho);
+			   
+                        no_j++;
+                    }
+		
+                    novo2.calcula_retangulo_minimo(novo2, false);
+                    novo2.calcula_area_padrao(novo2);
+			   
+                    Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v2, novo2.getFilhos());
+			   
+                    novo.getFilhos().add(novo2);
+                    novo2.setPai(novo);			   
+			   
+                    novo.calcula_retangulo_minimo(novo, false);
+                    novo.calcula_area_padrao(novo);
+		
+                    Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v, novo.getFilhos());
+		
+                    raiz_insert.getFilhos().add(novo);
+                    novo.setPai(raiz_insert);
+		
+                    No pai = novo.getPai();
+                    No root = pai;
+		
+                    while(pai != null){
 				
-				   novo2 = new No(false);
-				   node_v2 = false;
-			   }
-			   else{
-				
-				   novo2 = new No(true);
-				   node_v2 = true;
-			   }
-			
-			   while(no_j  <= no_k2){
-			   
-			      aux_filho = array.get(no_j);
-			      novo2.getFilhos().add(aux_filho);
-			      aux_filho.setPai(novo2);
-			      
-			      raiz_insert.getFilhos().remove(aux_filho);
-			   
-			      no_j++;
-			   }
-			        
-			   novo2.calcula_retangulo_minimo(novo2, false);
-			   novo2.calcula_area_padrao(novo2);
-			   
-			   Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v2, novo2.getFilhos());
-			   
-			   novo.getFilhos().add(novo2);
-			   novo2.setPai(novo);
-			   
-			   novo.calcula_retangulo_minimo(novo, false);
-			   novo.calcula_area_padrao(novo);
-			 
-			   Funcoes.ordenaPedidosDecrescenteRetMinimo(node_v, novo.getFilhos());
-			   
-			   raiz_insert.getFilhos().add(novo);
-			   novo.setPai(raiz_insert);
-			   
-			   No pai = novo.getPai();
-			   No root = pai;
-			   
-			   while(pai != null){
-				
-				if(pai.getItem() == null){
-				    rotaciona = false;
-				}
-				else{
-				    rotaciona = pai.getItem().getRotacao();
-				 }
+                        if(pai.getItem() == null){
+                            rotaciona = false;
+                        }
+                        else{
+                            rotaciona = pai.getItem().getRotacao();
+                        }
 
-				pai.calcula_retangulo_minimo(pai, rotaciona);
-				pai.calcula_area_padrao(pai);
-				
-				if(rotaciona == false){
-		    	   
-					if(pai.getTipo_corte().corte == No_orientacao.horizontal){
-						
-						Funcoes.ordenaPedidosDecrescenteRetMinimo(false, pai.getFilhos());
-				   }
-				   else{
-						Funcoes.ordenaPedidosDecrescenteRetMinimo(true, pai.getFilhos());
-				   }			    	   
-		        }
+                        pai.calcula_retangulo_minimo(pai, rotaciona);
+			pai.calcula_area_padrao(pai);
+			
+                        if(rotaciona == false){
+		    	
+                            if(pai.getTipo_corte().corte == No_orientacao.horizontal){
+			
+                                Funcoes.ordenaPedidosDecrescenteRetMinimo(false, pai.getFilhos());
+                            }
+                            else{
+                                Funcoes.ordenaPedidosDecrescenteRetMinimo(true, pai.getFilhos());
+                            }
+                        }
 		       
-				if(pai != null){
-				    root = pai;
-				}
-				
-				pai = pai.getPai();
-			   }
-			   
-			   Queue<No> fila = null;
-			   busca_largura(root, fila);
-		}
-	}
+                        if(pai != null){
+                            root = pai;
+                        }
+			
+                        pai = pai.getPai();
+                    }
+		
+                    Queue<No> fila = null;
+                    busca_largura(root, fila);
+                }
+        }
 	
 	public ArrayList<No> imprime(No raiz, Queue<No> fila){
 				

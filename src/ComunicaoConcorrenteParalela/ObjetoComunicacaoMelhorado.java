@@ -1,45 +1,58 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ComunicaoConcorrenteParalela;
 
-import HeuristicaConstrutivaInicial.Solucao;
-import SimulaGenetico.ETiposServicosAgentes;
+import HHDBinPackingTree.BinPackTreeForest;
 import java.io.Serializable;
+import HHDInternal.SolucaoHeuristica;
+import SimulaGenetico.ETiposServicosAgentes;
 
-/**
- *
- * @author marianny
- */
 public class ObjetoComunicacaoMelhorado implements Serializable {
     
-    private Solucao solucao;
-    private String servico_agente;
+    private SolucaoHeuristica solucao;
+    private BinPackTreeForest treeSolution;
+    private String mensagem_servico_agente;
     private ETiposServicosAgentes tipo_servico_agente;
     private ETiposServicosServidor tipo_servico_servidor;
 
-    public ObjetoComunicacaoMelhorado(){}
-    public ObjetoComunicacaoMelhorado(Solucao solucao, String servico, ETiposServicosAgentes tipo_A, ETiposServicosServidor tipo_S){
+    public ObjetoComunicacaoMelhorado(){
+    
+        mensagem_servico_agente =  "Não tenho nada";
+    }
+    
+    public ObjetoComunicacaoMelhorado(SolucaoHeuristica solucao, String MSGservico, ETiposServicosAgentes tipo_A, ETiposServicosServidor tipo_S){
     
         this.solucao = solucao;
-        this.servico_agente = servico;
+        this.treeSolution = null;
+        this.mensagem_servico_agente = MSGservico;
         this.tipo_servico_agente = tipo_A;
         this.tipo_servico_servidor = tipo_S;
     }
     
-    public Solucao getSolucao(){
+    public SolucaoHeuristica getSolucao(){
         return this.solucao;    
     }
     
-    public String getServicoAgente(){
-    
-        return this.servico_agente;
+    public BinPackTreeForest getTreeSolucao(){
+        return this.treeSolution;    
     }
     
-    public void setSolucao(Solucao solucao){
+    public String getMSGServicoAgente(){
+    
+        return this.mensagem_servico_agente;
+    }
+    
+    public void setMSGServicoAgente(String mSGServico){
+    
+        this.mensagem_servico_agente = mSGServico;
+    }
+    
+    public void setSolucao(SolucaoHeuristica solucao){
         
         this.solucao = solucao;
+    }
+    
+    public void setTreeSolucao(BinPackTreeForest treeSolution){
+        
+        this.treeSolution = treeSolution;    
     }
     
     public String getTipoServicoAgente(){

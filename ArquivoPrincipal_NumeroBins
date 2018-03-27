@@ -1,0 +1,7 @@
+set grid
+set title  "Gráfico Número de Bins"
+set xlabel "Solucao"
+set ylabel "Bins"
+set xrange [1.00:100]
+set yrange [0.00:100.00]
+plot "ArquivoNumBins"

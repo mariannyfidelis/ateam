@@ -5,7 +5,7 @@ import ComunicaoConcorrenteParalela.ServicoAgente;
 import Heuristicas.Individuo;
 import Heuristicas.Solucao;
 import algoritmosAgCombinacao.Filhos;
-import algoritmosAgCombinacao.OperacoesSolucoes_Individuos;
+import SimulaGenetico.OperacoesSolucoes_Individuos;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
